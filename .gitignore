@@ -40,3 +40,9 @@ luac.out
 *.i*86
 *.x86_64
 *.hex
+
+# IntelliJ
+.idea/
+
+# Hammerspoon (http://www.hammerspoon.org)
+Spoons/
