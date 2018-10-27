@@ -1,9 +1,9 @@
-hs.loadSpoon("ReloadConfiguration")
+hs.loadSpoon("SpoonInstall")
+
+spoon.SpoonInstall:updateRepo('default')
+spoon.SpoonInstall:andUse('ReloadConfiguration')
+spoon.SpoonInstall:andUse('KSheet')
 spoon.ReloadConfiguration:start()
-
-hs.loadSpoon("KSheet")
-
--- spoon.KSheet:show()
 
 local function getFilteredWindowLayout (windowLayout, windowTitle)
     newWindowLayout = {}
