@@ -105,6 +105,21 @@ hs.hotkey.bind({"cmd"}, "d", function()
   hs.grid.toggleShow()
 end)
 
+isCheatsheetToggled = false
+
+function toggleCheatsheet()
+    isCheatsheetToggled = not isCheatsheetToggled
+end
+
+hs.hotkey.bind({"cmd", "alt"}, "c", function()
+    if isCheatsheetToggled then
+        spoon.KSheet:hide()
+    else
+        spoon.KSheet:show()
+    end
+    isCheatsheetToggled = not isCheatsheetToggled
+end)
+
 function applicationWatcher(appName, eventType, appObject)
     if (eventType == hs.application.watcher.launched) then
         arrangeWindows(appName)
