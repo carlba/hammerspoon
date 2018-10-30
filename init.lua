@@ -42,7 +42,6 @@ function arrangeWindows(windowTitle)
         {"Calculator",  nil, monitor1, lowerRight, nil, nil},
     }
   else
-    hs.alert.show("Work")
     monitor1 = hs.screen.allScreens()[1]:name()
     monitor2 = hs.screen.allScreens()[2]:name()
     -- maximized window hs.geometry.unitrect({x=1, y=1, w=1, h=1}).
