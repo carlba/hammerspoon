@@ -1,7 +1,6 @@
 local secrets = require "secrets"
 
 hs.loadSpoon("SpoonInstall")
-
 spoon.SpoonInstall:updateRepo('default')
 spoon.SpoonInstall:andUse('ReloadConfiguration')
 spoon.SpoonInstall:andUse('KSheet')
@@ -25,6 +24,56 @@ local function getFilteredWindowLayout (windowLayout, windowTitle)
         if value[1] == windowTitle then
             table.insert(newWindowLayout, value)
         end
+    end
+    return newWindowLayout
+end
+
+function centerWindowOnScreen(window, screen)
+  local frame = window:frame()
+  local screen = screen or window:screen()
+  local max = screen:frame()
+
+  frame.x = max.x + (max.w / 4)
+  frame.y = max.y
+  frame.w = max.w / 2
+  frame.h = max.h
+  window:setFrame(frame)
+end
+
+function hideAllActiveWindowsExcept(window)
+    for index, visibleWindow in ipairs(hs.window.visibleWindows()) do
+        if window:id() ~= visibleWindow:id() then
+            result = window:application():hide()
+            if not result then
+                window:application():hide()
+            end
+        end
+    end
+end
+
+function hideAllActiveWindows()
+    for index, window in ipairs(hs.window.allWindows()) do
+        window:application():hide()
+    end
+end
+
+
+function showWindowsInAllWindows(AllWindows)
+    for index, window in ipairs(AllWindows) do
+        window:unminimize()
+    end
+end
+
+function hideWindowLayout(windowLayout)
+    for index, window in ipairs(hs.window.visibleWindows()) do
+        window:application():hide()
+    end
+end
+
+function getAllWindowsAsWindowLayout(window)
+    newWindowLayout = {}
+    for index, window in ipairs(hs.window.visibleWindows()) do
+        table.insert(newWindowLayout, {window:application(), window, window:screen(), nil, window:frame(), nil })
     end
     return newWindowLayout
 end
@@ -140,3 +189,26 @@ function applicationWatcher(appName, eventType, appObject)
 end
 appWatcher = hs.application.watcher.new(applicationWatcher)
 appWatcher:start()
+
+
+toggle = false
+storedWindowsLayout = {}
+storedAllVisibleWindows = {}
+
+hs.hotkey.bind(nil, "F19", function ()
+    toggle = not toggle
+    carlLogger.df('State of toggle is %s', toggle)
+    if toggle then
+        storedAllVisibleWindows = hs.window.visibleWindows()
+        focusedWindow = hs.window.focusedWindow()
+        carlLogger.df('Focused window is %s', focusedWindow)
+        hideAllActiveWindows()
+        hs.timer.doAfter(0.01,  function()
+            focusedWindow:application():unhide()
+            focusedWindow:centerOnScreen(hs.mouse:getCurrentScreen())
+        end)
+    else
+        showWindowsInAllWindows(storedAllVisibleWindows)
+        focusedWindow:focus()
+        hs.layout.apply(storedWindowsLayout)    end
+end)
