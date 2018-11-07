@@ -1,9 +1,23 @@
+local secrets = require "secrets"
+
 hs.loadSpoon("SpoonInstall")
 
 spoon.SpoonInstall:updateRepo('default')
 spoon.SpoonInstall:andUse('ReloadConfiguration')
 spoon.SpoonInstall:andUse('KSheet')
 spoon.ReloadConfiguration:start()
+
+hs.loadSpoon('HomeAssistantMenu')
+spoon.HomeAssistantMenu.uri = secrets.homeAssistant.uri
+spoon.HomeAssistantMenu.token = secrets.homeAssistant.token
+spoon.HomeAssistantMenu.temperature_sensor = secrets.homeAssistant.temperature_sensor
+spoon.HomeAssistantMenu:start()
+
+carlLogger = hs.logger.new('carlLogger')
+
+function string.starts(String,Start)
+   return string.sub(String,1,string.len(Start))==Start
+end
 
 local function getFilteredWindowLayout (windowLayout, windowTitle)
     newWindowLayout = {}
