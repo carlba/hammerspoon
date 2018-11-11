@@ -28,18 +28,6 @@ local function getFilteredWindowLayout (windowLayout, windowTitle)
     return newWindowLayout
 end
 
-function centerWindowOnScreen(window, screen)
-  local frame = window:frame()
-  local screen = screen or window:screen()
-  local max = screen:frame()
-
-  frame.x = max.x + (max.w / 4)
-  frame.y = max.y
-  frame.w = max.w / 2
-  frame.h = max.h
-  window:setFrame(frame)
-end
-
 function hideAllActiveWindowsExcept(window)
     for index, visibleWindow in ipairs(hs.window.visibleWindows()) do
         if window:id() ~= visibleWindow:id() then
