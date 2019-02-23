@@ -14,6 +14,11 @@ spoon.HomeAssistantMenu:start()
 
 carlLogger = hs.logger.new('carlLogger')
 
+hs.window.animationDuration = 0 -- disable animations
+-- https://www.hammerspoon.org/docs/hs.logger.html#level
+-- Higher is more verbose
+hs.logger.setGlobalLogLevel(5)
+
 function string.starts(String,Start)
    return string.sub(String,1,string.len(Start))==Start
 end
@@ -82,13 +87,14 @@ function arrangeWindows(windowTitle)
         {"Google Chrome",  nil, monitor1, hs.geometry.unitrect({x=0.5, y=0, w=0.25, h=1}), nil, nil},
         {"Firefox",  nil, monitor1, hs.geometry.unitrect({x=0.5, y=0, w=0.25, h=1}), nil, nil},
         {"PyCharm",  nil, monitor1, hs.layout.left50, nil, nil},
+        {"WebStorm",  nil, monitor1, hs.layout.left50, nil, nil},
         {"PyCharm",  "Commit Changes", monitor1, hs.layout.right50, nil, nil},
         {"Sublime Text",  nil, monitor1, upper50RightRight, nil},
         {"Mail",  nil, monitor1, upper50RightRight, nil, nil},
         {"Microsoft Teams",  nil, monitor1, upper50RightRight, nil, nil},
         {"Skype for Business",  nil, monitor1, upper50RightRight, nil, nil},
+        {"Franz",  nil, monitor2, upper50RightRight, nil, nil},
         {"Spotify",  nil, monitor1, lowerRight, nil, nil},
-        {"Station",  nil, monitor1, upper50RightRight, nil, nil},
         {"Iterm2",  nil, monitor1, upper50RightRight, nil, nil},
         {"Calculator",  nil, monitor1, lowerRight, nil, nil},
     }
@@ -101,12 +107,13 @@ function arrangeWindows(windowTitle)
         {"Firefox",  nil, monitor2, hs.layout.left50, nil, nil},
         {"PyCharm",  nil, monitor1, hs.layout.left50, nil, nil},
         {"PyCharm",  "Commit Changes", monitor1, hs.layout.right50, nil, nil},
+        {"WebStorm",  nil, monitor1, hs.layout.left50, nil, nil},
         {"Sublime Text",  nil, monitor1, upperRight, nil, nil},
         {"Mail",  nil, monitor2, upperRight, nil, nil},
         {"Microsoft Teams",  nil, monitor2, upperRight, nil, nil},
         {"Skype for Business",  nil, monitor2, upperRight, nil, nil},
+        {"Franz",  nil, monitor2, upperRight, nil, nil},
         {"Spotify",  nil, monitor2, lowerRight, nil, nil},
-        {"Station",  nil, monitor2, upperRight, nil, nil},
         {"iTerm2",  nil, monitor1, lowerRight, nil, nil},
         {"Calculator",  nil, monitor1, lowerRight, nil, nil},
     }
@@ -200,3 +207,11 @@ hs.hotkey.bind(nil, "F19", function ()
         focusedWindow:focus()
         hs.layout.apply(storedWindowsLayout)    end
 end)
+
+hs.hotkey.bind(nil, "F17", function ()
+    focusedWindow = hs.window.focusedWindow()
+    hs.window.find('Udemy'):application():activate()
+    hs.eventtap.event.newKeyEvent(hs.keycodes.map.space, true):post()
+    focusedWindow:application():activate()
+end)
+
