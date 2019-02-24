@@ -205,13 +205,27 @@ hs.hotkey.bind(nil, "F19", function ()
     else
         showWindowsInAllWindows(storedAllVisibleWindows)
         focusedWindow:focus()
-        hs.layout.apply(storedWindowsLayout)    end
+        hs.layout.apply(storedWindowsLayout)
+    end
 end)
+
+udemyWindow = false
 
 hs.hotkey.bind(nil, "F17", function ()
     focusedWindow = hs.window.focusedWindow()
-    hs.window.find('Udemy'):application():activate()
+    udemyWindow = udemyWindow or hs.window.find('Udemy')
+    udemyWindow:application():activate()
     hs.eventtap.event.newKeyEvent(hs.keycodes.map.space, true):post()
     focusedWindow:application():activate()
 end)
+
+hs.hotkey.bind(nil, "F16", function ()
+    focusedWindow = hs.window.focusedWindow()
+    udemyWindow = udemyWindow or hs.window.find('Udemy')
+    udemyWindow:application():activate()
+    hs.eventtap.event.newKeyEvent(hs.keycodes.map.left, true):post()
+    focusedWindow:application():activate()
+end)
+
+
 
