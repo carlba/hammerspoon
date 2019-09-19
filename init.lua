@@ -95,6 +95,7 @@ function arrangeWindows(windowTitle)
         {"Skype for Business",  nil, monitor1, upper50RightRight, nil, nil},
         {"Franz",  nil, monitor2, upper50RightRight, nil, nil},
         {"Spotify",  nil, monitor1, lowerRight, nil, nil},
+        {"Todoist",  nil, monitor1, lowerRight, nil, nil},
         {"Iterm2",  nil, monitor1, upper50RightRight, nil, nil},
         {"Calculator",  nil, monitor1, lowerRight, nil, nil},
     }
@@ -114,6 +115,7 @@ function arrangeWindows(windowTitle)
         {"Skype for Business",  nil, monitor2, upperRight, nil, nil},
         {"Franz",  nil, monitor2, upperRight, nil, nil},
         {"Spotify",  nil, monitor2, lowerRight, nil, nil},
+        {"Todoist",  nil, monitor2, lowerRight, nil, nil},
         {"iTerm2",  nil, monitor1, lowerRight, nil, nil},
         {"Calculator",  nil, monitor1, lowerRight, nil, nil},
     }
@@ -226,6 +228,3 @@ hs.hotkey.bind(nil, "F16", function ()
     hs.eventtap.event.newKeyEvent(hs.keycodes.map.left, true):post()
     focusedWindow:application():activate()
 end)
-
-
-
