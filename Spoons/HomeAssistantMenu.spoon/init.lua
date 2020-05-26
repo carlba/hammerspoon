@@ -44,24 +44,17 @@ function obj:toggleLight(entityId)
     hs.http.asyncPost(self.uri .. '/api/services/light/toggle', hs.json.encode(data), headers, function() end)
 end
 
---- HomeAssistantMenu:start()
---- Method
---- Start HomeAssistantMenu
----
---- Parameters:
----  * None
-function obj:start()
-    homeAssistantMenu = hs.menubar.new()
-    -- https://www.lua.org/pil/20.html
-    self.logger.f('token: %s, uri: %s, temperature_sensor: %s',
-                  self.token, self.uri, self.temperature_sensor)
 
+function obj:filterEntities(entityId)
+    data = {}
+    data["entity_id"] = entityId
+    hs.http.asyncPost(self.uri .. '/api/services/light/toggle', hs.json.encode(data), headers, function() end)
+end
 
+function obj:refresh()
     headers = {}
-    headers['x-ha-access'] = self.token
+    headers['Authorization'] = 'Bearer ' .. self.token
     headers['Content-Type'] = 'application/json'
-
-    homeAssistantMenu:setTitle('HomeAssistant')
 
     hs.http.asyncGet(self.uri .. '/api/states/'.. self.temperature_sensor, headers, function(status, body, responseHeaders)
         self.logger.df('Status of the GET request: %s', status)
@@ -81,6 +74,22 @@ function obj:start()
         homeAssistantMenu:setMenu(menuTable)
 
     end)
+
+end
+
+--- HomeAssistantMenu:start()
+--- Method
+--- Start HomeAssistantMenu
+---
+--- Parameters:
+---  * None
+function obj:start()
+    homeAssistantMenu = hs.menubar.new()
+    -- https://www.lua.org/pil/20.html
+    self.logger.f('token: %s, uri: %s, temperature_sensor: %s',
+                  self.token, self.uri, self.temperature_sensor)
+    self:refresh()
+    hs.timer.doEvery(60, self.refresh)
     return self
 end
 
