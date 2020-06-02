@@ -14,13 +14,49 @@ spoon.HomeAssistantMenu:start()
 
 carlLogger = hs.logger.new('carlLogger')
 
+isDebug = true
+
 hs.window.animationDuration = 0 -- disable animations
 -- https://www.hammerspoon.org/docs/hs.logger.html#level
 -- Higher is more verbose
 hs.logger.setGlobalLogLevel(5)
 
+--w = hs.httpserver.new():setPort(8082):setCallback(function(method, path, headers, body)
+--
+--    local uriParts = string.split(path, '/')
+--
+--    print('method:'.. method .. ' path:' .. path .. ' body' .. body)
+--
+--
+--
+--    if uriParts[1] == 'commands' then
+--        if uriParts[2] == 'work' then
+--            work()
+--            return '', 200, { ["Content-Type"] = "application/json" }
+--
+--        end
+--    end
+--end
+
+
+local function log (message)
+    file = io.open("/Users/cbackstrom/hammerspoon.log", "a")
+    file:write(os.date("!%Y%m%d,%H:%M:%S,") .. message .. "\n")
+    file:flush()
+end
+
 function string.starts(String, Start)
     return string.sub(String, 1, string.len(Start)) == Start
+end
+
+function string.split(String, separator)
+    separator = separator and separator or '%s'
+    local matches={}
+    for str in string.gmatch(String, "([^"..separator.."]+)") do
+            table.insert(matches, str)
+    end
+    print (hs.inspect(matches))
+    return matches
 end
 
 local function getFilteredWindowLayout (windowLayout, windowTitle)
@@ -70,47 +106,96 @@ function getAllWindowsAsWindowLayout(window)
     return newWindowLayout
 end
 
+function countTable(table)
+    count = 0
+    for k,v in pairs(table) do
+         count = count + 1
+    end
+    return count
+end
+
 function arrangeWindows(windowTitle)
+    -- https://www.hammerspoon.org/docs/hs.layout.html
+
+
     local windowLayout = {}
+    local left = hs.layout.left50;
+    local right = hs.layout.right50;
     local lowerRight = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.5, h = 0.5 })
     local upperRight = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.5, h = 0.5 })
-    local upper50RightLeft = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.25, h = 0.5 })
-    local upper50RightRight = hs.geometry.unitrect({ x = 0.75, y = 0, w = 0.25, h = 0.5 })
+    local upperRightLeft = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.25, h = 0.5 })
+    local upperRightRight = hs.geometry.unitrect({ x = 0.75, y = 0, w = 0.25, h = 0.5 })
+    local lowerRightRight = hs.geometry.unitrect({ x = 0.75, y = 0.5, w = 0.25, h = 0.5 })
+    local lowerLeftRight = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.25, h = 0.5 })
 
-    if hs.screen.allScreens()[1]:name() == "PHL BDM4037U" then
-        monitor1 = hs.screen.allScreens()[1]:name()
+    local rightLeft = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.25, h = 1 })
+
+    local allScreens = hs.screen.allScreens()
+    local screenCount = countTable(hs.screen.allScreens())
+
+    local monitor1 = allScreens[1]:name()
+    carlLogger.df(monitor1)
+
+
+    if screenCount == 1 and (monitor1  == "Color LCD") then
         -- maximized window hs.geometry.unitrect({x=1, y=1, w=1, h=1}).
         windowLayout = {
-            { "Google Chrome", nil, monitor1, hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.25, h = 1 }), nil, nil },
-            { "Firefox", nil, monitor1, hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.25, h = 1 }), nil, nil },
-            { "PyCharm", nil, monitor1, hs.layout.left50, nil, nil },
-            { "WebStorm", nil, monitor1, hs.layout.left50, nil, nil },
-            { "PyCharm", "Commit Changes", monitor1, hs.layout.right50, nil, nil },
-            { "Sublime Text", nil, monitor1, upper50RightRight, nil },
-            { "Mail", nil, monitor1, upper50RightRight, nil, nil },
-            { "Microsoft Teams", nil, monitor1, upper50RightRight, nil, nil },
-            { "Skype for Business", nil, monitor1, upper50RightRight, nil, nil },
-            { "Franz", nil, monitor2, upper50RightRight, nil, nil },
-            { "Spotify", nil, monitor1, lowerRight, nil, nil },
-            { "Todoist", nil, monitor1, lowerRight, nil, nil },
-            { "Iterm2", nil, monitor1, upper50RightRight, nil, nil },
+            { "Google Chrome", nil, monitor1, right, nil, nil },
+            { "PyCharm", nil, monitor1, left, nil, nil },
+            { "WebStorm", nil, monitor1, left, nil, nil },
+            { "Mail", nil, monitor1, upperRight, nil, nil },
+            { "Microsoft Teams", nil, monitor1, right, nil, nil },
+            { "Slack", nil, monitor1, right, nil, nil },
+            { "Spotify", nil, monitor1, right, nil, nil },
+            { "Todoist", nil, monitor1, right, nil, nil },
+            { "Iterm2", nil, monitor1, right, nil, nil },
+            { "Plex", nil, monitor1, upperRight, nil, nil },
+        }
+    elseif screenCount == 1 and (monitor1  == "PHL BDM4037U" or monitor1  == "ASUS PB287Q") then
+        monitor1 = allScreens[1]:name()
+        -- maximized window hs.geometry.unitrect({x=1, y=1, w=1, h=1}).
+        windowLayout = {
+            { "Google Chrome", nil, monitor1, rightLeft, nil, nil },
+            { "Chromium", nil, monitor1, lowerLeftRight, nil, nil },
+            { "Firefox", nil, monitor1, rightLeft, nil, nil },
+            { "Safari", nil, monitor1, rightLeft, nil, nil },
+            { "PyCharm", nil, monitor1, left, nil, nil },
+            { "WebStorm", nil, monitor1, left, nil, nil },
+            { "PyCharm", "Commit Changes", monitor1, right, nil, nil },
+            { "Sublime Text", nil, monitor1, upperRightRight, nil },
+            { "Typora", nil, monitor1, upperRightRight, nil },
+            { "Wiki", nil, monitor1, upperRightRight, nil },
+            { "Code", nil, monitor1, lowerRightRight, nil, nil },
+            { "Mail", nil, monitor1, upperRightRight, nil, nil },
+            { "Microsoft Teams", nil, monitor1, upperRightRight, nil, nil },
+            { "Calendar", nil, monitor1, upperRightRight, nil, nil },
+            { "Messenger", nil, monitor1, upperRightRight, nil, nil },
+            { "Skype for Business", nil, monitor1, upperRightRight, nil, nil },
+            { "MacPass" , nil, monitor1, upperRightRight, nil, nil },
+            { "Slack", nil, monitor1, upperRightRight, nil, nil },
+            { "Messenger", nil, monitor1, upperRightRight, nil, nil },
+            { "Todoist", nil, monitor1, lowerRightRight, nil, nil },
+            { "Iterm2", nil, monitor1, upperRightRight, nil, nil },
             { "Calculator", nil, monitor1, lowerRight, nil, nil },
+            { "Activity Monitor", nil, monitor1, upperRightRight, nil, nil },
+            { "Hammerspoon", nil, monitor1, upperRightRight, nil, nil },
+            { "Spotify", nil, monitor1, lowerRightRight, nil, nil },
         }
     else
-        monitor1 = hs.screen.allScreens()[1]:name()
-        monitor2 = hs.screen.allScreens()[2]:name()
+        monitor2 = allScreens[2]:name()
         -- maximized window hs.geometry.unitrect({x=1, y=1, w=1, h=1}).
         windowLayout = {
-            { "Google Chrome", nil, monitor2, hs.layout.left50, nil, nil },
-            { "Firefox", nil, monitor2, hs.layout.left50, nil, nil },
-            { "PyCharm", nil, monitor1, hs.layout.left50, nil, nil },
-            { "PyCharm", "Commit Changes", monitor1, hs.layout.right50, nil, nil },
-            { "WebStorm", nil, monitor1, hs.layout.left50, nil, nil },
+            { "Google Chrome", nil, monitor2, left, nil, nil },
+            { "Firefox", nil, monitor2, left, nil, nil },
+            { "PyCharm", nil, monitor1, left, nil, nil },
+            { "PyCharm", "Commit Changes", monitor1, right, nil, nil },
+            { "WebStorm", nil, monitor1, left, nil, nil },
             { "Sublime Text", nil, monitor1, upperRight, nil, nil },
             { "Mail", nil, monitor2, upperRight, nil, nil },
             { "Microsoft Teams", nil, monitor2, upperRight, nil, nil },
             { "Skype for Business", nil, monitor2, upperRight, nil, nil },
             { "Franz", nil, monitor2, upperRight, nil, nil },
+            { "Slack", nil, monitor2, upperRight, nil, nil },
             { "Spotify", nil, monitor2, lowerRight, nil, nil },
             { "Todoist", nil, monitor2, lowerRight, nil, nil },
             { "iTerm2", nil, monitor1, lowerRight, nil, nil },
@@ -125,6 +210,22 @@ function arrangeWindows(windowTitle)
     else
         hs.layout.apply(windowLayout)
     end
+end
+
+
+function findAndKillApplication(identifier)
+    local application = hs.application.find(identifier)
+    local result = false
+    if application then
+        application:kill()
+        result = true
+    end
+    return result
+end
+
+
+function work()
+    findAndKillApplication('Calculator')
 end
 
 hs.hotkey.bind({ "cmd", "alt" }, "t", arrangeWindows)
@@ -166,7 +267,7 @@ end)
 isCheatsheetToggled = false
 
 function toggleCheatsheet()
-    isCheatsheetToggled = not isCheatsheetToggled
+    isCheatsheetToggled = not iunsCheatsheetToggled
 end
 
 hs.hotkey.bind({ "cmd", "alt" }, "c", function()
@@ -179,6 +280,11 @@ hs.hotkey.bind({ "cmd", "alt" }, "c", function()
 end)
 
 function applicationWatcher(appName, eventType, appObject)
+    if isDebug then
+        file = io.open("/Users/cbackstrom/hammerspoon.log", "a")
+        file:write(os.date("!%Y%m%d,%H:%M:%S,") .. appName .. "\n")
+        file:flush()
+    end
     if (eventType == hs.application.watcher.launched) then
         arrangeWindows(appName)
     end
