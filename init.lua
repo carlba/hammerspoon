@@ -1,4 +1,4 @@
-local secrets = require "secrets"
+local secrets = require 'secrets'
 
 hs.loadSpoon("SpoonInstall")
 spoon.SpoonInstall:updateRepo('default')
@@ -12,35 +12,17 @@ spoon.HomeAssistantMenu.token = secrets.homeAssistant.token
 spoon.HomeAssistantMenu.temperature_sensor = secrets.homeAssistant.temperature_sensor
 spoon.HomeAssistantMenu:start()
 
-carlLogger = hs.logger.new('carlLogger')
+local carlLogger = hs.logger.new('carlLogger')
 
-isDebug = true
+local isDebug = true
 
 hs.window.animationDuration = 0 -- disable animations
 -- https://www.hammerspoon.org/docs/hs.logger.html#level
 -- Higher is more verbose
 hs.logger.setGlobalLogLevel(5)
 
---w = hs.httpserver.new():setPort(8082):setCallback(function(method, path, headers, body)
---
---    local uriParts = string.split(path, '/')
---
---    print('method:'.. method .. ' path:' .. path .. ' body' .. body)
---
---
---
---    if uriParts[1] == 'commands' then
---        if uriParts[2] == 'work' then
---            work()
---            return '', 200, { ["Content-Type"] = "application/json" }
---
---        end
---    end
---end
-
-
 local function log (message)
-    file = io.open("/Users/cbackstrom/hammerspoon.log", "a")
+    local file = io.open("/Users/cbackstrom/hammerspoon.log", "a")
     file:write(os.date("!%Y%m%d,%H:%M:%S,") .. message .. "\n")
     file:flush()
 end
@@ -60,7 +42,7 @@ function string.split(String, separator)
 end
 
 local function getFilteredWindowLayout (windowLayout, windowTitle)
-    newWindowLayout = {}
+    local newWindowLayout = {}
     for index, value in ipairs(windowLayout) do
         if value[1] == windowTitle then
             table.insert(newWindowLayout, value)
@@ -69,10 +51,10 @@ local function getFilteredWindowLayout (windowLayout, windowTitle)
     return newWindowLayout
 end
 
-function hideAllActiveWindowsExcept(window)
+local function hideAllActiveWindowsExcept(window)
     for index, visibleWindow in ipairs(hs.window.visibleWindows()) do
         if window:id() ~= visibleWindow:id() then
-            result = window:application():hide()
+            local result = window:application():hide()
             if not result then
                 window:application():hide()
             end
@@ -80,41 +62,41 @@ function hideAllActiveWindowsExcept(window)
     end
 end
 
-function hideAllActiveWindows()
+local function hideAllActiveWindows()
     for index, window in ipairs(hs.window.allWindows()) do
         window:application():hide()
     end
 end
 
-function showWindowsInAllWindows(AllWindows)
+local function showWindowsInAllWindows(AllWindows)
     for index, window in ipairs(AllWindows) do
         window:unminimize()
     end
 end
 
-function hideWindowLayout(windowLayout)
+local function hideWindowLayout(windowLayout)
     for index, window in ipairs(hs.window.visibleWindows()) do
         window:application():hide()
     end
 end
 
-function getAllWindowsAsWindowLayout(window)
-    newWindowLayout = {}
+local function getAllWindowsAsWindowLayout(window)
+    local newWindowLayout = {}
     for index, window in ipairs(hs.window.visibleWindows()) do
         table.insert(newWindowLayout, { window:application(), window, window:screen(), nil, window:frame(), nil })
     end
     return newWindowLayout
 end
 
-function countTable(table)
-    count = 0
+local function countTable(table)
+    local count = 0
     for k,v in pairs(table) do
          count = count + 1
     end
     return count
 end
 
-function arrangeWindows(windowTitle)
+local function arrangeWindows(windowTitle)
     -- https://www.hammerspoon.org/docs/hs.layout.html
 
 
@@ -165,7 +147,7 @@ function arrangeWindows(windowTitle)
             { "Sublime Text", nil, monitor1, upperRightRight, nil },
             { "Typora", nil, monitor1, upperRightRight, nil },
             { "Wiki", nil, monitor1, upperRightRight, nil },
-            { "Code", nil, monitor1, lowerRightRight, nil, nil },
+            { "Code", nil, monitor1, left, nil, nil },
             { "Mail", nil, monitor1, upperRightRight, nil, nil },
             { "Microsoft Teams", nil, monitor1, upperRightRight, nil, nil },
             { "Calendar", nil, monitor1, upperRightRight, nil, nil },
@@ -182,7 +164,7 @@ function arrangeWindows(windowTitle)
             { "Spotify", nil, monitor1, lowerRightRight, nil, nil },
         }
     else
-        monitor2 = allScreens[2]:name()
+        local monitor2 = allScreens[2]:name()
         -- maximized window hs.geometry.unitrect({x=1, y=1, w=1, h=1}).
         windowLayout = {
             { "Google Chrome", nil, monitor2, left, nil, nil },
@@ -213,7 +195,7 @@ function arrangeWindows(windowTitle)
 end
 
 
-function findAndKillApplication(identifier)
+local function findAndKillApplication(identifier)
     local application = hs.application.find(identifier)
     local result = false
     if application then
@@ -224,18 +206,18 @@ function findAndKillApplication(identifier)
 end
 
 
-function work()
+local function work()
     findAndKillApplication('Calculator')
 end
 
 hs.hotkey.bind({ "cmd", "alt" }, "t", arrangeWindows)
-wifiWatcher = nil
-homeSSID = "Fenix"
-workSSID = "SmithNet"
-lastSSID = hs.wifi.currentNetwork()
+local wifiWatcher = nil
+local homeSSID = "Fenix"
+local workSSID = "SmithNet"
+local lastSSID = hs.wifi.currentNetwork()
 
-function ssidChangedCallback()
-    newSSID = hs.wifi.currentNetwork()
+local function ssidChangedCallback()
+    local newSSID = hs.wifi.currentNetwork()
 
     if newSSID == homeSSID and lastSSID ~= homeSSID then
         -- We just joined our home WiFi network
@@ -264,10 +246,10 @@ hs.hotkey.bind({ "cmd" }, "d", function()
     hs.grid.toggleShow()
 end)
 
-isCheatsheetToggled = false
+local isCheatsheetToggled = false
 
-function toggleCheatsheet()
-    isCheatsheetToggled = not iunsCheatsheetToggled
+local function toggleCheatsheet()
+    isCheatsheetToggled = not isCheatsheetToggled
 end
 
 hs.hotkey.bind({ "cmd", "alt" }, "c", function()
@@ -279,9 +261,9 @@ hs.hotkey.bind({ "cmd", "alt" }, "c", function()
     isCheatsheetToggled = not isCheatsheetToggled
 end)
 
-function applicationWatcher(appName, eventType, appObject)
+local function applicationWatcher(appName, eventType, appObject)
     if isDebug then
-        file = io.open("/Users/cbackstrom/hammerspoon.log", "a")
+        local file = io.open("/Users/cbackstrom/hammerspoon.log", "a")
         file:write(os.date("!%Y%m%d,%H:%M:%S,") .. appName .. "\n")
         file:flush()
     end
@@ -289,19 +271,19 @@ function applicationWatcher(appName, eventType, appObject)
         arrangeWindows(appName)
     end
 end
-appWatcher = hs.application.watcher.new(applicationWatcher)
+local appWatcher = hs.application.watcher.new(applicationWatcher)
 appWatcher:start()
 
-toggle = false
-storedWindowsLayout = {}
-storedAllVisibleWindows = {}
+local toggle = false
+local storedWindowsLayout = {}
+local storedAllVisibleWindows = {}
 
 hs.hotkey.bind(nil, "F19", function()
     toggle = not toggle
     carlLogger.df('State of toggle is %s', toggle)
     if toggle then
         storedAllVisibleWindows = hs.window.visibleWindows()
-        focusedWindow = hs.window.focusedWindow()
+        local focusedWindow = hs.window.focusedWindow()
         carlLogger.df('Focused window is %s', focusedWindow)
         hideAllActiveWindows()
         hs.timer.doAfter(0.01, function()
@@ -315,10 +297,10 @@ hs.hotkey.bind(nil, "F19", function()
     end
 end)
 
-udemyWindow = false
+local udemyWindow = false
 
 hs.hotkey.bind(nil, "F17", function()
-    focusedWindow = hs.window.focusedWindow()
+    local focusedWindow = hs.window.focusedWindow()
     udemyWindow = udemyWindow or hs.window.find('Udemy')
     udemyWindow:application():activate()
     hs.eventtap.event.newKeyEvent(hs.keycodes.map.space, true):post()
@@ -326,7 +308,7 @@ hs.hotkey.bind(nil, "F17", function()
 end)
 
 hs.hotkey.bind(nil, "F16", function()
-    focusedWindow = hs.window.focusedWindow()
+    local focusedWindow = hs.window.focusedWindow()
     udemyWindow = udemyWindow or hs.window.find('Udemy')
     udemyWindow:application():activate()
     hs.eventtap.event.newKeyEvent(hs.keycodes.map.left, true):post()

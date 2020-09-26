@@ -39,39 +39,39 @@ obj.logger = hs.logger.new('HomeAssistantMenu')
 --- Parameters:
 ---  * entityId: A HomeAssistant entity_id I.E. light.bathroom
 function obj:toggleLight(entityId)
-    data = {}
+    local data = {}
     data["entity_id"] = entityId
     hs.http.asyncPost(self.uri .. '/api/services/light/toggle', hs.json.encode(data), headers, function() end)
 end
 
 
 function obj:filterEntities(entityId)
-    data = {}
+    local data = {}
     data["entity_id"] = entityId
     hs.http.asyncPost(self.uri .. '/api/services/light/toggle', hs.json.encode(data), headers, function() end)
 end
 
 function obj:refresh()
-    headers = {}
+    local headers = {}
     headers['Authorization'] = 'Bearer ' .. self.token
     headers['Content-Type'] = 'application/json'
 
     hs.http.asyncGet(self.uri .. '/api/states/'.. self.temperature_sensor, headers, function(status, body, responseHeaders)
         self.logger.df('Status of the GET request: %s', status)
         local decoded_body = hs.json.decode(body)
-        homeAssistantMenu:setTitle(decoded_body['state'])
+        HomeAssistantMenu:setTitle(decoded_body['state'])
     end)
 
     hs.http.asyncGet(self.uri ..'/api/states', headers, function(status, body, responseHeaders)
         local decoded_body = hs.json.decode(body)
 
-        menuTable = {}
+        local menuTable = {}
         for _, entity in ipairs(decoded_body) do
             if string.starts(entity['entity_id'], 'light.') then
                 table.insert(menuTable, { title = entity['entity_id'], fn = function(_, item) self:toggleLight(item.title) end })
             end
         end
-        homeAssistantMenu:setMenu(menuTable)
+        HomeAssistantMenu:setMenu(menuTable)
 
     end)
 
@@ -84,7 +84,7 @@ end
 --- Parameters:
 ---  * None
 function obj:start()
-    homeAssistantMenu = hs.menubar.new()
+    HomeAssistantMenu = hs.menubar.new()
     -- https://www.lua.org/pil/20.html
     self.logger.f('token: %s, uri: %s, temperature_sensor: %s',
                   self.token, self.uri, self.temperature_sensor)
