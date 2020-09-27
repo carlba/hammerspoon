@@ -37,7 +37,6 @@ function string.split(String, separator)
     for str in string.gmatch(String, "([^"..separator.."]+)") do
             table.insert(matches, str)
     end
-    print (hs.inspect(matches))
     return matches
 end
 
@@ -111,6 +110,7 @@ local function arrangeWindows(windowTitle)
     local lowerLeftRight = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.25, h = 0.5 })
 
     local rightLeft = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.25, h = 1 })
+    local leftLeft = hs.geometry.unitrect({ x = 0, y = 0, w = 0.25, h = 1 })
 
     local allScreens = hs.screen.allScreens()
     local screenCount = countTable(hs.screen.allScreens())
@@ -209,43 +209,11 @@ end
 local function work()
     findAndKillApplication('Calculator')
 end
-
-hs.hotkey.bind({ "cmd", "alt" }, "t", arrangeWindows)
-local wifiWatcher = nil
-local homeSSID = "Fenix"
-local workSSID = "SmithNet"
-local lastSSID = hs.wifi.currentNetwork()
-
-local function ssidChangedCallback()
-    local newSSID = hs.wifi.currentNetwork()
-
-    if newSSID == homeSSID and lastSSID ~= homeSSID then
-        -- We just joined our home WiFi network
-        hs.alert.show("Joined Home SSID")
-    elseif newSSID ~= homeSSID and lastSSID == homeSSID then
-        -- We just departed our home WiFi network
-        hs.alert.show("Departed Home SSID")
-    end
-
-    if newSSID == workSSID and lastSSID ~= workSSID then
-        -- We just joined our work WiFi network
-        hs.alert.show("Joined Work SSID")
-    elseif newSSID ~= workSSID and lastSSID == workSSID then
-        -- We just departed our work WiFi network
-        hs.alert.show("Departed Work SSID")
-    end
-    lastSSID = newSSID
-end
-
-wifiWatcher = hs.wifi.watcher.new(ssidChangedCallback)
-wifiWatcher:start()
-
 hs.hotkey.bind({ "cmd" }, "d", function()
     hs.grid.setGrid('4x2')
     hs.grid.setMargins('0x0')
     hs.grid.toggleShow()
 end)
-
 local isCheatsheetToggled = false
 
 local function toggleCheatsheet()
@@ -263,9 +231,7 @@ end)
 
 local function applicationWatcher(appName, eventType, appObject)
     if isDebug then
-        local file = io.open("/Users/cbackstrom/hammerspoon.log", "a")
-        file:write(os.date("!%Y%m%d,%H:%M:%S,") .. appName .. "\n")
-        file:flush()
+        log(appName .. eventType .. "\n")
     end
     if (eventType == hs.application.watcher.launched) then
         arrangeWindows(appName)
