@@ -40,6 +40,16 @@ function string.split(String, separator)
     return matches
 end
 
+-- taken from https://stackoverflow.com/a/63081277/1839778
+local function findInTable(t, value)
+    local found = false
+    for _, v in ipairs(t) do
+      if v == value then
+        return true
+      end
+    end
+end
+
 local function getFilteredWindowLayout (windowLayout, windowTitle)
     local newWindowLayout = {}
     for index, value in ipairs(windowLayout) do
@@ -233,7 +243,15 @@ local function applicationWatcher(appName, eventType, appObject)
     if isDebug then
         log(appName .. eventType .. "\n")
     end
-    if (eventType == hs.application.watcher.launched) then
+    
+    -- https://www.hammerspoon.org/docs/hs.application.watcher.html    
+    local applicationEvents = {
+        hs.application.watcher.launched,
+        hs.application.watcher.activated,
+        hs.application.watcher.deactivated
+    }
+
+    if (findInTable(applicationEvents, eventType)) then
         arrangeWindows(appName)
     end
 end
