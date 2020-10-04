@@ -50,3 +50,22 @@ end
 
 wifiWatcher = hs.wifi.watcher.new(ssidChangedCallback)
 wifiWatcher:start()
+
+hs.hotkey.bind(nil, "F19", function()
+    toggle = not toggle
+    carlLogger.df('State of toggle is %s', toggle)
+    if toggle then
+        storedAllVisibleWindows = hs.window.visibleWindows()
+        local focusedWindow = hs.window.focusedWindow()
+        carlLogger.df('Focused window is %s', focusedWindow)
+        hideAllActiveWindows()
+        hs.timer.doAfter(0.01, function()
+            focusedWindow:application():unhide()
+            focusedWindow:centerOnScreen(hs.mouse:getCurrentScreen())
+        end)
+    else
+        showWindowsInAllWindows(storedAllVisibleWindows)
+        focusedWindow:focus()
+        hs.layout.apply(storedWindowsLayout)
+    end
+end)

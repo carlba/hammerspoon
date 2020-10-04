@@ -41,8 +41,9 @@ luac.out
 *.x86_64
 *.hex
 
-# IntelliJ
-.idea/
+# IDEs
+.idea
+.vscode
 
 # Hammerspoon (http://www.hammerspoon.org)
 Spoons/

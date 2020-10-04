@@ -1,5 +1,7 @@
 local secrets = require 'secrets'
 
+require('hs.ipc')
+
 hs.loadSpoon("SpoonInstall")
 spoon.SpoonInstall:updateRepo('default')
 spoon.SpoonInstall:andUse('ReloadConfiguration')
@@ -12,9 +14,12 @@ spoon.HomeAssistantMenu.token = secrets.homeAssistant.token
 spoon.HomeAssistantMenu.temperature_sensor = secrets.homeAssistant.temperature_sensor
 spoon.HomeAssistantMenu:start()
 
-local carlLogger = hs.logger.new('carlLogger')
 
+local carlLogger = hs.logger.new('carlLogger')
 local isDebug = true
+
+
+hs.ipc.cliInstall('/usr/local/bin')
 
 hs.window.animationDuration = 0 -- disable animations
 -- https://www.hammerspoon.org/docs/hs.logger.html#level
@@ -40,10 +45,38 @@ function string.split(String, separator)
     return matches
 end
 
+
+local webServer = hs.httpserver.new():setPort(8083):setCallback(function(method, path, headers, body)
+  
+    local function formatHttpReply(code, message)
+        return hs.json.encode({['message'] = message}), 200, { ["Content-Type"] = "application/json" }
+    end
+
+    local uriParts = string.split(path, '/')
+    print(path)
+
+    print('method:'.. method .. ' path:' .. path .. ' body' .. body)
+    print(hs.json.encode(uriParts))
+
+    if uriParts[1] == 'commands' and not uriParts[2] then
+        return formatHttpReply(404, 'Command not fosund')
+    end
+
+    if uriParts[1] == 'commands' then
+        if uriParts[2] == 'typora' then
+            toggleTypora()
+            return formatHttpReply(200, 'OK')
+        end
+    end
+    return formatHttpReply(404, 'Command not found'.. hs.json.encode(uriParts))
+end)
+
+webServer:start()
+
 -- taken from https://stackoverflow.com/a/63081277/1839778
 local function findInTable(t, value)
     local found = false
-    for _, v in ipairs(t) do
+    for _, v in ipairs (t) do
       if v == value then
         return true
       end
@@ -155,7 +188,6 @@ local function arrangeWindows(windowTitle)
             { "WebStorm", nil, monitor1, left, nil, nil },
             { "PyCharm", "Commit Changes", monitor1, right, nil, nil },
             { "Sublime Text", nil, monitor1, upperRightRight, nil },
-            { "Typora", nil, monitor1, upperRightRight, nil },
             { "Wiki", nil, monitor1, upperRightRight, nil },
             { "Code", nil, monitor1, left, nil, nil },
             { "Mail", nil, monitor1, upperRightRight, nil, nil },
@@ -170,7 +202,7 @@ local function arrangeWindows(windowTitle)
             { "Iterm2", nil, monitor1, upperRightRight, nil, nil },
             { "Calculator", nil, monitor1, lowerRight, nil, nil },
             { "Activity Monitor", nil, monitor1, upperRightRight, nil, nil },
-            { "Hammerspoon", nil, monitor1, upperRightRight, nil, nil },
+            { "Hammerspoon", nil, monitor1, lowerRightRight, nil, nil },
             { "Spotify", nil, monitor1, lowerRightRight, nil, nil },
         }
     else
@@ -219,6 +251,7 @@ end
 local function work()
     findAndKillApplication('Calculator')
 end
+
 hs.hotkey.bind({ "cmd" }, "d", function()
     hs.grid.setGrid('4x2')
     hs.grid.setMargins('0x0')
@@ -255,6 +288,23 @@ local function applicationWatcher(appName, eventType, appObject)
         arrangeWindows(appName)
     end
 end
+
+function toggleTypora()
+    local focusedWindow = hs.window.focusedWindow()    
+    if focusedWindow and focusedWindow:title() == '.scratch.md' and focusedWindow:application():name() == 'Typora' then
+        focusedWindow:application():hide()
+    else
+        hs.execute('open -a "Typora" "$HOME/gdrive/wiki/.scratch.md"')
+        hs.application.launchOrFocus('Typora')
+        local typora = hs.application.find('Typora')
+        typora:unhide()
+        typora:mainWindow():unminimize()
+        typora:mainWindow():focus()
+    end
+end
+
+hs.hotkey.bind(nil, "F19", toggleTypora)
+
 local appWatcher = hs.application.watcher.new(applicationWatcher)
 appWatcher:start()
 
@@ -264,39 +314,12 @@ local storedAllVisibleWindows = {}
 
 hs.hotkey.bind({ "cmd", "alt" }, "t", arrangeWindows)
 
-hs.hotkey.bind(nil, "F19", function()
-    toggle = not toggle
-    carlLogger.df('State of toggle is %s', toggle)
-    if toggle then
-        storedAllVisibleWindows = hs.window.visibleWindows()
-        local focusedWindow = hs.window.focusedWindow()
-        carlLogger.df('Focused window is %s', focusedWindow)
-        hideAllActiveWindows()
-        hs.timer.doAfter(0.01, function()
-            focusedWindow:application():unhide()
-            focusedWindow:centerOnScreen(hs.mouse:getCurrentScreen())
-        end)
-    else
-        showWindowsInAllWindows(storedAllVisibleWindows)
-        focusedWindow:focus()
-        hs.layout.apply(storedWindowsLayout)
-    end
-end)
-
 local udemyWindow = false
 
 hs.hotkey.bind(nil, "F17", function()
-    local focusedWindow = hs.window.focusedWindow()
-    udemyWindow = udemyWindow or hs.window.find('Udemy')
+    local focusedWindow = hs.window.focusedWindow()    
+    udemyWindow = udemyWindow or hs.application.find('Google Chrome'):findWindow('Udemy')
     udemyWindow:application():activate()
     hs.eventtap.event.newKeyEvent(hs.keycodes.map.space, true):post()
-    focusedWindow:application():activate()
-end)
-
-hs.hotkey.bind(nil, "F16", function()
-    local focusedWindow = hs.window.focusedWindow()
-    udemyWindow = udemyWindow or hs.window.find('Udemy')
-    udemyWindow:application():activate()
-    hs.eventtap.event.newKeyEvent(hs.keycodes.map.left, true):post()
     focusedWindow:application():activate()
 end)
