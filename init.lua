@@ -262,6 +262,8 @@ local toggle = false
 local storedWindowsLayout = {}
 local storedAllVisibleWindows = {}
 
+hs.hotkey.bind({ "cmd", "alt" }, "t", arrangeWindows)
+
 hs.hotkey.bind(nil, "F19", function()
     toggle = not toggle
     carlLogger.df('State of toggle is %s', toggle)

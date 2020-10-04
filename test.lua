@@ -21,7 +21,7 @@ local parts = __TS__StringSplit(test, "")
 --    end
 --end
 
-hs.hotkey.bind({ "cmd", "alt" }, "t", arrangeWindows)
+
 local wifiWatcher = nil
 local homeSSID = "Fenix"
 local workSSID = "SmithNet"
