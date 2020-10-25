@@ -222,15 +222,6 @@ local function findAndKillApplication(identifier)
 end
 
 
-local function work()
-    findAndKillApplication('Calculator')
-end
-
-hs.hotkey.bind({ "cmd" }, "d", function()
-    hs.grid.setGrid('4x2')
-    hs.grid.setMargins('0x0')
-    hs.grid.toggleShow()
-end)
 local isCheatsheetToggled = false
 
 local function toggleCheatsheet()
@@ -254,8 +245,7 @@ local function applicationWatcher(appName, eventType, appObject)
     -- https://www.hammerspoon.org/docs/hs.application.watcher.html    
     local applicationEvents = {
         hs.application.watcher.launched,
-        hs.application.watcher.activated,
-        hs.application.watcher.deactivated
+        -- hs.application.watcher.deactivated
     }
 
     if (findInTable(applicationEvents, eventType)) then
@@ -264,7 +254,7 @@ local function applicationWatcher(appName, eventType, appObject)
 end
 
 function toggleTypora()
-    local focusedWindow = hs.window.focusedWindow()    
+    local focusedWindow = hs.window.focusedWindow()
     if focusedWindow and focusedWindow:title() == '.scratch.md' and focusedWindow:application():name() == 'Typora' then
         focusedWindow:application():hide()
     else
@@ -285,6 +275,15 @@ appWatcher:start()
 local toggle = false
 local storedWindowsLayout = {}
 local storedAllVisibleWindows = {}
+
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "t", arrangeWindows)
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "s", toggleTypora)
+
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "d", function()
+    hs.grid.setGrid('4x2')
+    hs.grid.setMargins('0x0')
+    hs.grid.toggleShow()
+end)
 
 hs.hotkey.bind({ "cmd", "alt" }, "t", arrangeWindows)
 
