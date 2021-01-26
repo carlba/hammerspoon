@@ -3,6 +3,7 @@ local webserver = require 'webserver'
 local inspect = require('inspect')
 require('hs.ipc')
 require('url_shortener')
+local utils = require('utils')
 
 hs.loadSpoon("SpoonInstall")
 spoon.SpoonInstall:updateRepo('default')
@@ -40,17 +41,6 @@ layouts.er = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.5, h = 0.5 })
 layouts.qwas = hs.layout.left50;
 layouts.erdf = hs.layout.right50;
 
-
-local function udemyPreset()
-    local windowLayout = {
-        { "Code", nil, monitor1, layouts.qw  , nil, nil },
-        { "Typora", nil, monitor1, layouts.a , nil, nil },
-        { "Udemy", nil, monitor1, layouts.er , nil, nil }
-    }
-    hs.layout.apply(windowLayout)
-end
-
-
 hs.ipc.cliInstall('/usr/local/bin')
 
 hs.window.animationDuration = 0 -- disable animations
@@ -58,7 +48,7 @@ hs.window.animationDuration = 0 -- disable animations
 -- Higher is more verbose
 hs.logger.setGlobalLogLevel(5)
 
-local function log (message)
+local function log(message)
     local file = io.open("/Users/cbackstrom/hammerspoon.log", "a")
     file:write(os.date("!%Y%m%d,%H:%M:%S,") .. message .. "\n")
     file:flush()
@@ -79,82 +69,14 @@ end
 
 -- webserver:start();
 
--- taken from https://stackoverflow.com/a/63081277/1839778
-local function findInTable(t, value)
-    local found = false
-    for _, v in ipairs (t) do
-      if v == value then
-        return true
-      end
-    end
-end
-
-local function getFilteredWindowLayout (windowLayout, windowTitle)
-    local newWindowLayout = {}
-    for index, value in ipairs(windowLayout) do
-        if value[1] == windowTitle then
-            table.insert(newWindowLayout, value)
-        end
-    end
-    return newWindowLayout
-end
-
-local function hideAllActiveWindowsExcept(window)
-    for index, visibleWindow in ipairs(hs.window.visibleWindows()) do
-        if window:id() ~= visibleWindow:id() then
-            local result = window:application():hide()
-            if not result then
-                window:application():hide()
-            end
-        end
-    end
-end
-
-local function hideAllActiveWindows()
-    for index, window in ipairs(hs.window.allWindows()) do
-        window:application():hide()
-    end
-end
-
-local function showWindowsInAllWindows(AllWindows)
-    for index, window in ipairs(AllWindows) do
-        window:unminimize()
-    end
-end
-
-local function hideWindowLayout(windowLayout)
-    for index, window in ipairs(hs.window.visibleWindows()) do
-        window:application():hide()
-    end
-end
-
-local function getAllWindowsAsWindowLayout(window)
-    local newWindowLayout = {}
-    for index, window in ipairs(hs.window.visibleWindows()) do
-        table.insert(newWindowLayout, { window:application(), window, window:screen(), nil, window:frame(), nil })
-    end
-    return newWindowLayout
-end
-
-local function countTable(table)
-    local count = 0
-    for k,v in pairs(table) do
-         count = count + 1
-    end
-    return count
-end
-
 local function arrangeWindows(windowTitle)
     -- https://www.hammerspoon.org/docs/hs.layout.html
 
 
     local windowLayout = {}
-
     local allScreens = hs.screen.allScreens()
-    local screenCount = countTable(hs.screen.allScreens())
-
+    local screenCount = utils.countTable(hs.screen.allScreens())
     local monitor1 = allScreens[1]:name()
-
 
     if screenCount == 1 and (monitor1  == "Color LCD") then
         -- maximized window hs.geometry.unitrect({x=1, y=1, w=1, h=1}).
@@ -221,7 +143,7 @@ local function arrangeWindows(windowTitle)
         }
     end
     if windowTitle ~= nil then
-        windowLayout = getFilteredWindowLayout(windowLayout, windowTitle)
+        windowLayout = utils.getFilteredWindowLayout(windowLayout, windowTitle)
         hs.timer.doAfter(0.2, function()
             hs.layout.apply(windowLayout)
         end)
@@ -230,15 +152,13 @@ local function arrangeWindows(windowTitle)
     end
 end
 
-
-local function findAndKillApplication(identifier)
-    local application = hs.application.find(identifier)
-    local result = false
-    if application then
-        application:kill()
-        result = true
-    end
-    return result
+local function udemyPreset()
+    local windowLayout = {
+        { "Code", nil, monitor1, layouts.qw  , nil, nil },
+        { "Typora", nil, monitor1, layouts.a , nil, nil },
+        { "Udemy", nil, monitor1, layouts.er , nil, nil }
+    }
+    hs.layout.apply(windowLayout)
 end
 
 
@@ -269,7 +189,7 @@ local function applicationWatcher(appName, eventType, appObject)
         -- hs.application.watcher.deactivated
     }
 
-    if (findInTable(applicationEvents, eventType)) then
+    if (utils.findInTable(applicationEvents, eventType)) then
         arrangeWindows(appName)
     end
 end
@@ -292,10 +212,6 @@ hs.hotkey.bind(nil, "F19", toggleTypora)
 
 local appWatcher = hs.application.watcher.new(applicationWatcher)
 appWatcher:start()
-
-local toggle = false
-local storedWindowsLayout = {}
-local storedAllVisibleWindows = {}
 
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "t", arrangeWindows)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "s", toggleTypora)
