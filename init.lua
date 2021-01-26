@@ -34,12 +34,26 @@ layouts.leftLeft = hs.geometry.unitrect({ x = 0, y = 0, w = 0.25, h = 1 })
 
 layouts.q = hs.geometry.unitrect({ x = 0, y = 0, w = 0.25, h = 0.5 })
 layouts.a = hs.geometry.unitrect({ x = 0, y = 0.5, w = 0.25, h = 0.5 })
+layouts.d = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.25, h = 0.5 })
+layouts.f = hs.geometry.unitrect({ x = 0.75, y = 0.5, w = 0.25, h = 0.5 })
 layouts.qw = hs.geometry.unitrect({ x = 0, y = 0, w = 0.5, h = 0.5 })
 layouts.as = hs.geometry.unitrect({ x = 0, y = 0.5, w = 0.5, h = 0.5 })
+layouts.sd = hs.geometry.unitrect({ x = 0.25, y = 0.5, w = 0.5, h = 0.5 })
 layouts.df = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.5, h = 0.5 })
 layouts.er = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.5, h = 0.5 })
 layouts.qwas = hs.layout.left50;
 layouts.erdf = hs.layout.right50;
+
+local function udemyPreset()
+    local windowLayout = {
+        { "Code", nil, monitor1, layouts.qw  , nil, nil },
+        { "Typora", nil, monitor1, layouts.a , nil, nil },
+        { "Udemy", nil, monitor1, layouts.er , nil, nil },
+        { "Chromium", nil, monitor1, layouts.sd , nil, nil },
+        { "Google Chrome", nil, monitor1, layouts.f, nil, nil }
+    }
+    hs.layout.apply(windowLayout)
+end
 
 hs.ipc.cliInstall('/usr/local/bin')
 
@@ -66,8 +80,6 @@ function string.split(String, separator)
     end
     return matches
 end
-
--- webserver:start();
 
 local function arrangeWindows(windowTitle)
     -- https://www.hammerspoon.org/docs/hs.layout.html
@@ -150,15 +162,6 @@ local function arrangeWindows(windowTitle)
     else
         hs.layout.apply(windowLayout)
     end
-end
-
-local function udemyPreset()
-    local windowLayout = {
-        { "Code", nil, monitor1, layouts.qw  , nil, nil },
-        { "Typora", nil, monitor1, layouts.a , nil, nil },
-        { "Udemy", nil, monitor1, layouts.er , nil, nil }
-    }
-    hs.layout.apply(windowLayout)
 end
 
 
