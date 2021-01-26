@@ -1,8 +1,8 @@
 local secrets = require 'secrets'
 local webserver = require 'webserver'
-
-require('hs.ipc')
 local inspect = require('inspect')
+require('hs.ipc')
+require('url_shortener')
 
 hs.loadSpoon("SpoonInstall")
 spoon.SpoonInstall:updateRepo('default')
@@ -45,8 +45,7 @@ local function udemyPreset()
     local windowLayout = {
         { "Code", nil, monitor1, layouts.qw  , nil, nil },
         { "Typora", nil, monitor1, layouts.a , nil, nil },
-        { "Udemy", nil, monitor1, layouts.er , nil, nil },
-        
+        { "Udemy", nil, monitor1, layouts.er , nil, nil }
     }
     hs.layout.apply(windowLayout)
 end
@@ -144,10 +143,6 @@ local function countTable(table)
     end
     return count
 end
-
-
-
-
 
 local function arrangeWindows(windowTitle)
     -- https://www.hammerspoon.org/docs/hs.layout.html
