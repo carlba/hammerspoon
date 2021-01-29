@@ -75,5 +75,19 @@ function utils.getFilteredWindowLayout (windowLayout, windowTitle)
     return newWindowLayout
 end
 
+function utils.getFocusedWindowTitle()
+    local focusedWindow = hs.window.focusedWindow()
+    if focusedWindow and focusedWindow:title() then
+        return focusedWindow:title();
+    end
+end
+
+function utils.getFocusedWindowApplicationTitle()
+    local focusedWindow = hs.window.focusedWindow()
+    if focusedWindow then
+        return focusedWindow:application():title();
+    end
+end
+
 
 return utils

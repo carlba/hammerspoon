@@ -2,6 +2,7 @@
 local secrets = require 'secrets'
 local KUTT_IT_PASSWORD = secrets.kuttIt.password;
 local KUTT_IT_TOKEN = secrets.kuttIt.token;
+local utils = require('utils')
 
 local HEADERS = {};
 HEADERS['X-API-KEY'] = KUTT_IT_TOKEN;
@@ -13,13 +14,11 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "S", function()
 			"https://kutt.it/api/v2/links",
 			hs.json.encode({
 				target=board,
-				description= "Generated from Hammerspoon",
+				description= "Hammerspoon:"..utils.getFocusedWindowApplicationTitle() .. ':'.. utils.getFocusedWindowTitle()
 			}), HEADERS,
 			function(status, response, headers)
 				if (status == 200 or status == 201) then
 					local msg = hs.json.decode(response)
-					-- carlLogger.df(msg);
-
 					hs.pasteboard.setContents(msg.link)
 					hs.notify.new({title="kutt.it URL Shorten: Success", informativeText=msg.link}):send()
 				else
