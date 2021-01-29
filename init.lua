@@ -55,6 +55,16 @@ local function udemyPreset()
     hs.layout.apply(windowLayout)
 end
 
+local function workPreset()
+    local windowLayout = {
+        { "Code", nil, monitor1, layouts.qw  , nil, nil },
+        { "Typora", nil, monitor1, layouts.a , nil, nil },
+        { "Chromium", nil, monitor1, layouts.er , nil, nil },
+        { "Google Chrome", nil, monitor1, layouts.df, nil, nil }
+    }
+    hs.layout.apply(windowLayout)
+end
+
 hs.ipc.cliInstall('/usr/local/bin')
 
 hs.window.animationDuration = 0 -- disable animations
@@ -199,7 +209,7 @@ end
 
 function toggleTypora()
     local focusedWindow = hs.window.focusedWindow()
-    if focusedWindow and focusedWindow:title() == '.scratch.md' and focusedWindow:application():name() == 'Typora' then
+    if utils.getFocusedWindowTitle() == '.scratch.md' and focusedWindow:application():name() == 'Typora' then
         focusedWindow:application():hide()
     else
         hs.execute('open -a "Typora" "$HOME/gdrive/wiki/.scratch.md"')
@@ -219,6 +229,7 @@ appWatcher:start()
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "t", arrangeWindows)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "s", toggleTypora)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "1", udemyPreset)
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "2", workPreset)
 
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "d", function()
     hs.grid.setGrid('4x2')
@@ -229,7 +240,7 @@ end)
 hs.hotkey.bind({ "cmd", "alt" }, "t", arrangeWindows)
 
 local udemyWindow = false
-hs.hotkey.bind(nil, "F17", function()
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "r", function()
     local focusedWindow = hs.window.focusedWindow()
     udemyWindow = udemyWindow or hs.application.find('Udemy'):focusedWindow()
     udemyWindow = udemyWindow or hs.application.find('Google Chrome'):findWindow('Udemy')
