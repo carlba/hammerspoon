@@ -69,3 +69,33 @@ hs.hotkey.bind(nil, "F19", function()
         hs.layout.apply(storedWindowsLayout)
     end
 end)
+
+-- local function getLayOuts()
+--     local layouts = {}
+--     layouts.left = hs.layout.left50;
+--     layouts.right = hs.layout.right50;
+--     layouts.lowerRight = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.5, h = 0.5 })
+--     layouts.upperRight = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.5, h = 0.5 })
+--     layouts.upperRightLeft = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.25, h = 0.5 })
+--     layouts.upperRightRight = hs.geometry.unitrect({ x = 0.75, y = 0, w = 0.25, h = 0.5 })
+--     layouts.lowerRightRight = hs.geometry.unitrect({ x = 0.75, y = 0.5, w = 0.25, h = 0.5 })
+--     layouts.lowerLeftRight = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.25, h = 0.5 })
+--     layouts.rightLeft = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.25, h = 1 })
+--     layouts.leftLeft = hs.geometry.unitrect({ x = 0, y = 0, w = 0.25, h = 1 })
+--     layouts.q = hs.geometry.unitrect({ x = 0, y = 0, w = 0.25, h = 0.5 })
+--     layouts.a = hs.geometry.unitrect({ x = 0, y = 0.5, w = 0.25, h = 0.5 })
+--     layouts.d = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.25, h = 0.5 })
+--     layouts.f = hs.geometry.unitrect({ x = 0.75, y = 0.5, w = 0.25, h = 0.5 })
+--     layouts.qw = hs.geometry.unitrect({ x = 0, y = 0, w = 0.5, h = 0.5 })
+--     layouts.as = hs.geometry.unitrect({ x = 0, y = 0.5, w = 0.5, h = 0.5 })
+--     layouts.sd = hs.geometry.unitrect({ x = 0.25, y = 0.5, w = 0.5, h = 0.5 })
+--     layouts.df = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.5, h = 0.5 })
+--     layouts.er = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.5, h = 0.5 })
+--     layouts.ed = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.25, h = 1 })
+--     layouts.rf = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.5, h = 1 })
+--     layouts.qwas = hs.layout.left50;
+--     layouts.erdf = hs.layout.right50;
+--     layouts.wesd = hs.geometry.unitrect({ x = 0.25, y = 0, w = 0.5, h = 1 });
+--     layouts.qwerasdf = hs.geometry.unitrect({ x = 0, y = 0, w = 1, h = 1 });
+--     return layouts
+-- end

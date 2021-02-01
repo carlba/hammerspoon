@@ -55,6 +55,16 @@ function utils.findAndKillApplication(identifier)
     return result
 end
 
+function utils.findAndHideApplication(identifier)
+    local application = hs.application.find(identifier)
+    local result = false
+    if application then
+        application:kill()
+        result = true
+    end
+    return result
+end
+
 -- taken from https://stackoverflow.com/a/63081277/1839778
 function utils.findInTable(t, value)
     local found = false
@@ -89,5 +99,38 @@ function utils.getFocusedWindowApplicationTitle()
     end
 end
 
+function utils.reverseTable(t)
+    local reversedTable = {}
+    local itemCount = #t
+    for k, v in ipairs(t) do
+        reversedTable[itemCount + 1 - k] = v
+    end
+    return reversedTable
+end
+
+function utils.log(message)
+    local file = io.open("/Users/cbackstrom/hammerspoon.log", "a")
+    file:write(os.date("!%Y%m%d,%H:%M:%S,") .. message .. "\n")
+    file:flush()
+end
+
+function utils.isTableEmpty(tbl)
+    if next(tbl) == nil then
+        return true
+    end
+end
+
+function utils.applicationHasVisibleWindows(app)
+    return app and not utils.isTableEmpty(app:visibleWindows())
+end
+
+function utils.unhideWindows(app)
+    for _, app in pairs(app) do
+        local foundApp = hs.application.find(app);
+        if foundApp then
+            foundApp:unhide();
+        end
+    end
+end
 
 return utils

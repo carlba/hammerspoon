@@ -8,75 +8,96 @@ local utils = require('utils')
 hs.loadSpoon("SpoonInstall")
 spoon.SpoonInstall:updateRepo('default')
 spoon.SpoonInstall:andUse('ReloadConfiguration')
-spoon.SpoonInstall:andUse('KSheet')
 spoon.ReloadConfiguration:start()
 
 hs.loadSpoon('HomeAssistantMenu')
 spoon.HomeAssistantMenu.uri = secrets.homeAssistant.uri
 spoon.HomeAssistantMenu.token = secrets.homeAssistant.token
 spoon.HomeAssistantMenu.temperature_sensor = secrets.homeAssistant.temperature_sensor
-spoon.HomeAssistantMenu:start()
+-- spoon.HomeAssistantMenu:start()
 
 local carlLogger = hs.logger.new('carlLogger')
 local isDebug = true
 
-local layouts = {}
-layouts.left = hs.layout.left50;
-layouts.right = hs.layout.right50;
-layouts.lowerRight = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.5, h = 0.5 })
-layouts.upperRight = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.5, h = 0.5 })
-layouts.upperRightLeft = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.25, h = 0.5 })
-layouts.upperRightRight = hs.geometry.unitrect({ x = 0.75, y = 0, w = 0.25, h = 0.5 })
-layouts.lowerRightRight = hs.geometry.unitrect({ x = 0.75, y = 0.5, w = 0.25, h = 0.5 })
-layouts.lowerLeftRight = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.25, h = 0.5 })
-layouts.rightLeft = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.25, h = 1 })
-layouts.leftLeft = hs.geometry.unitrect({ x = 0, y = 0, w = 0.25, h = 1 })
+hs.grid.setGrid('8x2')
+hs.grid.setMargins('0x0')
 
-layouts.q = hs.geometry.unitrect({ x = 0, y = 0, w = 0.25, h = 0.5 })
-layouts.a = hs.geometry.unitrect({ x = 0, y = 0.5, w = 0.25, h = 0.5 })
-layouts.d = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.25, h = 0.5 })
-layouts.f = hs.geometry.unitrect({ x = 0.75, y = 0.5, w = 0.25, h = 0.5 })
-layouts.qw = hs.geometry.unitrect({ x = 0, y = 0, w = 0.5, h = 0.5 })
-layouts.as = hs.geometry.unitrect({ x = 0, y = 0.5, w = 0.5, h = 0.5 })
-layouts.sd = hs.geometry.unitrect({ x = 0.25, y = 0.5, w = 0.5, h = 0.5 })
-layouts.df = hs.geometry.unitrect({ x = 0.5, y = 0.5, w = 0.5, h = 0.5 })
-layouts.er = hs.geometry.unitrect({ x = 0.5, y = 0, w = 0.5, h = 0.5 })
-layouts.qwas = hs.layout.left50;
-layouts.erdf = hs.layout.right50;
+
+local function getLayOuts()
+    local layouts = {}
+    local monitor1 = hs.screen.allScreens()[1]
+    layouts.qwer = hs.grid.getCell('0,0 4x1', monitor1)
+    layouts.ty = hs.grid.getCell('4,0 2x1', monitor1)
+    layouts.tyu = hs.grid.getCell('4,0 3x1', monitor1)
+    layouts.tyui = hs.grid.getCell('4,0 4x1', monitor1)
+    layouts.ui = hs.grid.getCell('6,0 2x1', monitor1)
+    layouts.as = hs.grid.getCell('0,1 2x1', monitor1)
+    layouts.dfg = hs.grid.getCell('2,1 3x1', monitor1)
+    layouts.hjk = hs.grid.getCell('5,1 3x1', monitor1)
+    return layouts
+end
+
+local managedApps = {'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN'}
+
+
+local function hideManagedWindows()
+    for _, app in pairs(managedApps) do
+        local foundApp = hs.application.find(app)
+        if foundApp then
+            foundApp:hide()
+        end
+    end
+end
 
 local function udemyPreset()
+    hideManagedWindows()
+    utils.unhideWindows({'Code', 'Typora', 'Chromium', 'Google Chrome'})
+    hs.application.open('Udemy',2, true);
     local windowLayout = {
-        { "Code", nil, monitor1, layouts.qw  , nil, nil },
-        { "Typora", nil, monitor1, layouts.a , nil, nil },
-        { "Udemy", nil, monitor1, layouts.er , nil, nil },
-        { "Chromium", nil, monitor1, layouts.sd , nil, nil },
-        { "Google Chrome", nil, monitor1, layouts.f, nil, nil }
+        { "Code", nil, nil, nil, nil, layouts.qwer },
+        { "Typora", nil, monitor1, nil, nil, layouts.asdf},
+        { "Udemy", nil, monitor1, nil , nil, layouts.tyui},
+        { "Google Chrome", nil, monitor1, nil, nil, layouts.hjk }
+                
     }
     hs.layout.apply(windowLayout)
 end
 
 local function workPreset()
+    hideManagedWindows()
+    utils.unhideWindows({'Code', 'Typora', 'Chromium', 'Google Chrome'})
     local windowLayout = {
-        { "Code", nil, monitor1, layouts.qw  , nil, nil },
-        { "Typora", nil, monitor1, layouts.a , nil, nil },
-        { "Chromium", nil, monitor1, layouts.er , nil, nil },
-        { "Google Chrome", nil, monitor1, layouts.df, nil, nil }
+        { "Code", nil, nil, nil, nil, layouts.qwer },
+        { "Typora", nil, monitor1, nil, nil, layouts.asdf},
+        { "Chromium", nil, monitor1, nil, nil, layouts.dfg },
+        { "Google Chrome", nil, monitor1,nil, nil, layouts.ty }
     }
     hs.layout.apply(windowLayout)
 end
 
-hs.ipc.cliInstall('/usr/local/bin')
+local function relaxPreset()
+    hideManagedWindows()
+    utils.unhideWindows({'Google Chrome'})
+    local windowLayout = {
+        { "Google Chrome", nil, monitor1, layouts.wesd, nil, nil }
+    }
+    hs.layout.apply(windowLayout)
+end
+
+local function dnPreset()
+    local app = hs.application.find('eDN');
+    if (app and utils.applicationHasVisibleWindows(app)) then
+        app:hide();
+    else
+        hs.application.open('eDN',2, true);
+        hs.eventtap.keyStroke({"ctrl", "cmd"}, "f")
+    end
+end
 
 hs.window.animationDuration = 0 -- disable animations
 -- https://www.hammerspoon.org/docs/hs.logger.html#level
 -- Higher is more verbose
 hs.logger.setGlobalLogLevel(5)
-
-local function log(message)
-    local file = io.open("/Users/cbackstrom/hammerspoon.log", "a")
-    file:write(os.date("!%Y%m%d,%H:%M:%S,") .. message .. "\n")
-    file:flush()
-end
 
 function string.starts(String, Start)
     return string.sub(String, 1, string.len(Start)) == Start
@@ -223,17 +244,20 @@ end
 
 hs.hotkey.bind(nil, "F19", toggleTypora)
 
-local appWatcher = hs.application.watcher.new(applicationWatcher)
-appWatcher:start()
+-- Disabled for now will reenable later
+-- local appWatcher = hs.application.watcher.new(applicationWatcher)
+-- appWatcher:start()
 
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "t", arrangeWindows)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "s", toggleTypora)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "1", udemyPreset)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "2", workPreset)
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "3", dnPreset)
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "4", relaxPreset)
 
-hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "d", function()
-    hs.grid.setGrid('4x2')
-    hs.grid.setMargins('0x0')
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "d", function()    
+    local monitor1 = hs.screen.allScreens()[1]
+    carlLogger.df(hs.inspect(cell))
     hs.grid.toggleShow()
 end)
 
@@ -248,3 +272,5 @@ hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "r", function()
     hs.eventtap.event.newKeyEvent(hs.keycodes.map.space, true):post()
     focusedWindow:application():activate()
 end)
+
+layouts = getLayOuts();
