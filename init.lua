@@ -16,7 +16,7 @@ spoon.HomeAssistantMenu.token = secrets.homeAssistant.token
 spoon.HomeAssistantMenu.temperature_sensor = secrets.homeAssistant.temperature_sensor
 -- spoon.HomeAssistantMenu:start()
 
-local carlLogger = hs.logger.new('carlLogger')
+local logger = hs.logger.new('main')
 local isDebug = true
 
 hs.grid.setGrid('8x2')
@@ -255,9 +255,7 @@ hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "2", workPreset)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "3", dnPreset)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "4", relaxPreset)
 
-hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "d", function()    
-    local monitor1 = hs.screen.allScreens()[1]
-    carlLogger.df(hs.inspect(cell))
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "d", function()
     hs.grid.toggleShow()
 end)
 
