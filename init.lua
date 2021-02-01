@@ -1,7 +1,4 @@
 local secrets = require 'secrets'
-local webserver = require 'webserver'
-local inspect = require('inspect')
-require('hs.ipc')
 require('url_shortener')
 local utils = require('utils')
 
@@ -22,7 +19,6 @@ local isDebug = true
 hs.grid.setGrid('8x2')
 hs.grid.setMargins('0x0')
 
-
 local function getLayOuts()
     local layouts = {}
     local monitor1 = hs.screen.allScreens()[1]
@@ -38,7 +34,6 @@ local function getLayOuts()
 end
 
 local managedApps = {'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN'}
-
 
 local function hideManagedWindows()
     for _, app in pairs(managedApps) do
@@ -58,7 +53,6 @@ local function udemyPreset()
         { "Typora", nil, monitor1, nil, nil, layouts.asdf},
         { "Udemy", nil, monitor1, nil , nil, layouts.tyui},
         { "Google Chrome", nil, monitor1, nil, nil, layouts.hjk }
-                
     }
     hs.layout.apply(windowLayout)
 end
@@ -114,7 +108,6 @@ end
 
 local function arrangeWindows(windowTitle)
     -- https://www.hammerspoon.org/docs/hs.layout.html
-
 
     local windowLayout = {}
     local allScreens = hs.screen.allScreens()
