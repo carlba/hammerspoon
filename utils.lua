@@ -1,4 +1,5 @@
 local utils = {};
+utils.table = {};
 
 function utils.hideAllActiveWindowsExcept(window)
     for index, visibleWindow in ipairs(hs.window.visibleWindows()) do
@@ -133,4 +134,25 @@ function utils.unhideWindows(app)
     end
 end
 
+-- table.filter({"a", "b", "c", "d"}, function(o, k, i) return o >= "c" end)  --> {"c","d"}
+--
+-- @FGRibreau - Francois-Guillaume Ribreau
+-- @Redsmin - A full-feature client for Redis http://redsmin.com
+function utils.table.filter(t, filterIter)
+    local out = {}
+    for k, v in pairs(t) do
+      if filterIter(v, k, t) then out[k] = v end
+    end
+    return out
+end
+
+function utils.table.map(tbl, f)
+    local t = {}
+    for k,v in pairs(tbl) do
+        t[k] = f(v)
+    end
+    return t
+end
+
 return utils
+

@@ -19,6 +19,9 @@ local isDebug = true
 hs.grid.setGrid('8x2')
 hs.grid.setMargins('0x0')
 
+table.filter = utils.table.filter
+table.map = utils.table.filter
+
 local function getLayOuts()
     local layouts = {}
     local monitor1 = hs.screen.allScreens()[1]
@@ -33,10 +36,14 @@ local function getLayOuts()
     return layouts
 end
 
-local managedApps = {'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN'}
+local managedApps = {'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN', 'Finder'}
 
-local function hideManagedWindows()
-    for _, app in pairs(managedApps) do
+local function hideManagedWindows(exclusions)
+    local filteredApps = table.filter(managedApps, function(o, k, i) return not utils.findInTable(exclusions, o) end)
+    logger.df('filtered', hs.inspect(filteredApps))
+
+    for _, app in pairs(filteredApps) do
+        logger.df(app);
         local foundApp = hs.application.find(app)
         if foundApp then
             foundApp:hide()
@@ -45,27 +52,32 @@ local function hideManagedWindows()
 end
 
 local function udemyPreset()
-    hideManagedWindows()
-    utils.unhideWindows({'Code', 'Typora', 'Chromium', 'Google Chrome'})
-    hs.application.open('Udemy',2, true);
     local windowLayout = {
         { "Code", nil, nil, nil, nil, layouts.qwer },
-        { "Typora", nil, monitor1, nil, nil, layouts.asdf},
+        { "Typora", nil, monitor1, nil, nil, layouts.as},
         { "Udemy", nil, monitor1, nil , nil, layouts.tyui},
+        { "Chromium", nil, nil, nil, nil, layouts.dfg },
         { "Google Chrome", nil, monitor1, nil, nil, layouts.hjk }
     }
+
+    local windows = utils.table.map(windowLayout, function(value) return value[1] end);
+    hideManagedWindows(windows)
+    utils.unhideWindows(windows)
+    hs.application.open('Udemy',2, true);
+
     hs.layout.apply(windowLayout)
 end
 
 local function workPreset()
-    hideManagedWindows()
-    utils.unhideWindows({'Code', 'Typora', 'Chromium', 'Google Chrome'})
     local windowLayout = {
         { "Code", nil, nil, nil, nil, layouts.qwer },
-        { "Typora", nil, monitor1, nil, nil, layouts.asdf},
-        { "Chromium", nil, monitor1, nil, nil, layouts.dfg },
-        { "Google Chrome", nil, monitor1,nil, nil, layouts.ty }
+        { "Typora", nil, nil, nil, nil, layouts.as },
+        { "Chromium", nil, nil, nil, nil, layouts.dfg },
+        { "Google Chrome", nil, nil ,nil, nil, layouts.ty }
     }
+    local windows = table.map(windowLayout, function(value) return value[1] end);
+    hideManagedWindows(windows)
+    utils.unhideWindows(windows)
     hs.layout.apply(windowLayout)
 end
 
@@ -221,7 +233,7 @@ local function applicationWatcher(appName, eventType, appObject)
     end
 end
 
-function toggleTypora()
+local function typoraToggle()
     local focusedWindow = hs.window.focusedWindow()
     if utils.getFocusedWindowTitle() == '.scratch.md' and focusedWindow:application():name() == 'Typora' then
         focusedWindow:application():hide()
@@ -235,18 +247,29 @@ function toggleTypora()
     end
 end
 
-hs.hotkey.bind(nil, "F19", toggleTypora)
+local function typoraSearch()
+    hs.application.launchOrFocus('Typora')
+    local typora = hs.application.find('Typora')
+    typora:unhide()
+    typora:mainWindow():unminimize()
+    typora:mainWindow():focus()
+    hs.eventtap.keyStroke({"ctrl", "cmd"}, "1", 0)
+    hs.timer.doAfter(0.1, function() hs.eventtap.keyStroke({"shift", "command"},"f") end)
+
+end
+
 
 -- Disabled for now will reenable later
 -- local appWatcher = hs.application.watcher.new(applicationWatcher)
 -- appWatcher:start()
 
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "t", arrangeWindows)
-hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "s", toggleTypora)
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "s", typoraToggle)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "1", udemyPreset)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "2", workPreset)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "3", dnPreset)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "4", relaxPreset)
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "f", typoraSearch)
 
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "d", function()
     hs.grid.toggleShow()
