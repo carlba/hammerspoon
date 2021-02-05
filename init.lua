@@ -255,8 +255,8 @@ local function typoraSearch()
     typora:mainWindow():focus()
     hs.eventtap.keyStroke({"ctrl", "cmd"}, "1", 0)
     hs.timer.doAfter(0.1, function() hs.eventtap.keyStroke({"shift", "command"},"f") end)
-
 end
+
 
 
 -- Disabled for now will reenable later
@@ -277,10 +277,9 @@ end)
 
 hs.hotkey.bind({ "cmd", "alt" }, "t", arrangeWindows)
 
-local udemyWindow = false
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "r", function()
     local focusedWindow = hs.window.focusedWindow()
-    udemyWindow = udemyWindow or hs.application.find('Udemy'):focusedWindow()
+    local udemyWindow = hs.application.find('Udemy'):focusedWindow()
     udemyWindow = udemyWindow or hs.application.find('Google Chrome'):findWindow('Udemy')
     udemyWindow:application():activate()
     hs.eventtap.event.newKeyEvent(hs.keycodes.map.space, true):post()
@@ -288,3 +287,4 @@ hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "r", function()
 end)
 
 layouts = getLayOuts();
+  
