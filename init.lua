@@ -20,7 +20,7 @@ hs.grid.setGrid('8x2')
 hs.grid.setMargins('0x0')
 
 table.filter = utils.table.filter
-table.map = utils.table.filter
+table.map = utils.table.map
 
 local function getLayOuts()
     local layouts = {}
