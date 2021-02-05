@@ -57,9 +57,9 @@ local function udemyPreset()
         { "Typora", nil, monitor1, nil, nil, layouts.as},
         { "Udemy", nil, monitor1, nil , nil, layouts.tyui},
         { "Chromium", nil, nil, nil, nil, layouts.dfg },
-        { "Google Chrome", nil, monitor1, nil, nil, layouts.hjk }
+        { "Google Chrome", nil, monitor1, nil, nil, layouts.hjk },
+        { "SmartGit", nil, monitor1, nil, nil, layouts.hjk }
     }
-
     local windows = utils.table.map(windowLayout, function(value) return value[1] end);
     hideManagedWindows(windows)
     utils.unhideWindows(windows)
