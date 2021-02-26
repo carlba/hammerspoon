@@ -128,8 +128,10 @@ end
 function utils.unhideWindows(app)
     for _, app in pairs(app) do
         local foundApp = hs.application.find(app);
-        if foundApp then
-            foundApp:unhide();
+        if foundApp and foundApp.unhide then
+            foundApp:unhide()
+        elseif foundApp then
+            foundApp:application():unhide()
         end
     end
 end

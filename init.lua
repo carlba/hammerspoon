@@ -26,9 +26,11 @@ local function getLayOuts()
     local layouts = {}
     local monitor1 = hs.screen.allScreens()[1]
     layouts.qwer = hs.grid.getCell('0,0 4x1', monitor1)
+    layouts.qwerasdf = hs.grid.getCell('0,0 4x4', monitor1)
     layouts.ty = hs.grid.getCell('4,0 2x1', monitor1)
     layouts.tyu = hs.grid.getCell('4,0 3x1', monitor1)
     layouts.tyui = hs.grid.getCell('4,0 4x1', monitor1)
+    layouts.tyuighjk = hs.grid.getCell('4,0 4x4', monitor1)
     layouts.ui = hs.grid.getCell('6,0 2x1', monitor1)
     layouts.as = hs.grid.getCell('0,1 2x1', monitor1)
     layouts.dfg = hs.grid.getCell('2,1 3x1', monitor1)
@@ -36,30 +38,50 @@ local function getLayOuts()
     return layouts
 end
 
+
 local managedApps = {'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN', 'Finder'}
 
 local function hideManagedWindows(exclusions)
     local filteredApps = table.filter(managedApps, function(o, k, i) return not utils.findInTable(exclusions, o) end)
     logger.df('filtered', hs.inspect(filteredApps))
 
-    for _, app in pairs(filteredApps) do
-        logger.df(app);
+    for _, app in pairs(filteredApps) do        
         local foundApp = hs.application.find(app)
-        if foundApp then
+        if foundApp and foundApp.hide then
             foundApp:hide()
+        elseif foundApp then
+            foundApp:application():hide()
         end
     end
 end
 
 local function udemyPreset()
-    local windowLayout = {
-        { "Code", nil, nil, nil, nil, layouts.qwer },
-        { "Typora", nil, monitor1, nil, nil, layouts.as},
-        { "Udemy", nil, monitor1, nil , nil, layouts.tyui},
-        { "Chromium", nil, nil, nil, nil, layouts.dfg },
-        { "Google Chrome", nil, monitor1, nil, nil, layouts.hjk },
-        { "SmartGit", nil, monitor1, nil, nil, layouts.hjk }
-    }
+    local monitor1 = hs.screen.allScreens()[1]:currentMode()
+
+    local windowLayout
+    if monitor1['w'] == 2560 and monitor1['h'] == 1600 then
+        windowLayout = {
+            { "Code", nil, nil, nil, nil, layouts.qwer },
+            { "Code - Insiders", nil, nil, nil, nil, layouts.qwerasdf},
+            { "Typora", nil, monitor1, nil, nil, layouts.as},
+            { "Udemy", nil, monitor1, nil , nil, layouts.tyui},
+            { "Chromium", nil, nil, nil, nil, layouts.dfg },
+            { "Google Chrome", nil, monitor1, nil, nil,  layouts.tyuighjk},
+            { "SmartGit", nil, monitor1, nil, nil, layouts.hjk }
+        }
+    else
+        windowLayout = {
+            { "Code", nil, nil, nil, nil, layouts.qwer },
+            { "Code - Insiders", nil, nil, nil, nil, layouts.qwerasdf},
+            { "Typora", nil, monitor1, nil, nil, layouts.as},
+            { "Udemy", nil, monitor1, nil , nil, layouts.tyui},
+            { "Chromium", nil, nil, nil, nil, layouts.dfg },
+            { "Google Chrome", nil, monitor1, nil, nil, layouts.hjk },
+            { "SmartGit", nil, monitor1, nil, nil, layouts.hjk }
+        }
+    end
+
+
     local windows = utils.table.map(windowLayout, function(value) return value[1] end);
     hideManagedWindows(windows)
     utils.unhideWindows(windows)
@@ -69,12 +91,25 @@ local function udemyPreset()
 end
 
 local function workPreset()
-    local windowLayout = {
-        { "Code", nil, nil, nil, nil, layouts.qwer },
-        { "Typora", nil, nil, nil, nil, layouts.as },
-        { "Chromium", nil, nil, nil, nil, layouts.dfg },
-        { "Google Chrome", nil, nil ,nil, nil, layouts.ty }
-    }
+    local monitor1 = hs.screen.allScreens()[1]:currentMode()
+    local windowLayout
+    if monitor1['w'] == 2560 and monitor1['h'] == 1600 then
+        windowLayout = {
+            { "Code", nil, nil, nil, nil, layouts.qwer },
+            { "Code - Insiders", nil, nil, nil, nil, layouts.qwerasdf},
+            { "Typora", nil, nil, nil, nil, layouts.as },
+            { "Chromium", nil, nil, nil, nil, layouts.dfg },
+            { "Google Chrome", nil, monitor1, nil, nil,  layouts.tyuighjk},
+        }
+    else
+        windowLayout = {
+            { "Code", nil, nil, nil, nil, layouts.qwer },
+            { "Code - Insiders", nil, nil, nil, nil, layouts.qwerasdf},
+            { "Typora", nil, nil, nil, nil, layouts.as },
+            { "Chromium", nil, nil, nil, nil, layouts.dfg },
+            { "Google Chrome", nil, nil ,nil, nil, layouts.ty }
+        }
+    end
     local windows = table.map(windowLayout, function(value) return value[1] end);
     hideManagedWindows(windows)
     utils.unhideWindows(windows)
