@@ -1,6 +1,8 @@
 local utils = {};
 utils.table = {};
 
+local logger = hs.logger.new('utils')
+
 function utils.hideAllActiveWindowsExcept(window)
     for index, visibleWindow in ipairs(hs.window.visibleWindows()) do
         if window:id() ~= visibleWindow:id() then
@@ -69,11 +71,12 @@ end
 -- taken from https://stackoverflow.com/a/63081277/1839778
 function utils.findInTable(t, value)
     local found = false
-    for _, v in ipairs (t) do
+    for _, v in pairs (t) do
       if v == value then
-        return true
+        found = true
       end
     end
+    return found
 end
 
 function utils.getFilteredWindowLayout (windowLayout, windowTitle)
@@ -125,15 +128,25 @@ function utils.applicationHasVisibleWindows(app)
     return app and not utils.isTableEmpty(app:visibleWindows())
 end
 
-function utils.unhideWindows(app)
-    for _, app in pairs(app) do
-        local foundApp = hs.application.find(app);
-        if foundApp and foundApp.unhide then
-            foundApp:unhide()
-        elseif foundApp then
-            foundApp:application():unhide()
-        end
+function utils.unhideWindows(applications)
+    local runningApplications = table.filter(hs.application.runningApplications(), function(runningApplication, k, i) return utils.findInTable(applications, runningApplication:title()) end)
+
+    for _, runningApp in pairs(runningApplications) do
+        logger.df(hs.inspect(runningApp))
+        runningApp:unhide()
     end
+end
+
+-- table.filter({"a", "b", "c", "d"}, function(o, k, i) return o >= "c" end)  --> {"c","d"}
+--
+-- @FGRibreau - Francois-Guillaume Ribreau
+-- @Redsmin - A full-feature client for Redis http://redsmin.com
+function utils.table.filter(t, filterIter)
+    local out = {}
+    for k, v in pairs(t) do
+      if filterIter(v, k, t) then out[k] = v end
+    end
+    return out
 end
 
 -- table.filter({"a", "b", "c", "d"}, function(o, k, i) return o >= "c" end)  --> {"c","d"}
@@ -154,6 +167,21 @@ function utils.table.map(tbl, f)
         t[k] = f(v)
     end
     return t
+end
+
+function utils.hideManagedWindows(exclusions)
+    local managedApps = {'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN', 'DataGrip', 'Messenger'}
+    local filteredApps = table.filter(managedApps, function(o, k, i) return not utils.findInTable(exclusions, o) end)
+    local runningApplications = table.filter(hs.application.runningApplications(), function(runningApplication, k, i) return utils.findInTable(filteredApps, runningApplication:title()) end)
+    for _, app in pairs(runningApplications) do
+        app:hide()
+    end
+end
+
+function utils.hideWindowsInLayout(windowLayout)
+    local windows = utils.table.map(windowLayout, function(value) return value[1] end);
+    utils.hideManagedWindows(windows)
+    utils.unhideWindows(windows)
 end
 
 return utils
