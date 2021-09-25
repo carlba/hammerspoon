@@ -152,7 +152,9 @@ local function dnPreset()
     end
 end
 
-hs.window.animationDuration = 0 -- disable animations
+-- disable animations
+hs.window.animationDuration = 0
+
 -- https://www.hammerspoon.org/docs/hs.logger.html#level
 -- Higher is more verbose
 hs.logger.setGlobalLogLevel(5)
@@ -193,6 +195,25 @@ local function typoraSearch()
     hs.eventtap.keyStroke({"ctrl", "cmd"}, "1", 0)
     hs.timer.doAfter(0.1, function() hs.eventtap.keyStroke({"shift", "command"},"f") end)
 end
+
+local function applicationWatcher(appName, eventType, appObject)
+    -- https://www.hammerspoon.org/docs/hs.application.watcher.html
+    local applicationEvents = {
+        hs.application.watcher.activated,
+        hs.application.watcher.deactivated
+    }
+    if (utils.findInTable(applicationEvents, eventType)) then
+        if appName == 'Plex' and eventType == hs.application.watcher.activated then
+            -- https://www.hammerspoon.org/docs/hs.caffeinate.html#set
+            hs.caffeinate.set('displayIdle', true, true)
+        elseif appName == 'Plex' and eventType == hs.application.watcher.deactivated then
+            hs.caffeinate.set('displayIdle', false, true)
+        end
+    end
+end
+
+local appWatcher = hs.application.watcher.new(applicationWatcher)
+appWatcher:start()
 
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "s", typoraToggle)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "1", workPresetWeb)
