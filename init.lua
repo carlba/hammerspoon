@@ -47,8 +47,7 @@ local function udemyPreset()
             { "Typora", nil, monitor1, nil, nil, layouts.as},
             { "Udemy", nil, monitor1, nil , nil, layouts.tyui},
             { "Chromium", nil, nil, nil, nil, layouts.dfg },
-            { "Google Chrome", nil, monitor1, nil, nil,  layouts.tyuighjk},
-            { "SmartGit", nil, monitor1, nil, nil, layouts.hjk }
+            { "Google Chrome", nil, monitor1, nil, nil,  layouts.tyuighjk}, 
         }
     else
         windowLayout = {
@@ -88,10 +87,14 @@ local function workPresetWeb()
             { "Hammerspoon", nil, nil, nil, nil, layouts.ty },
             { "Messenger", nil, nil, nil, nil, layouts.gh },
             { "Todoist", nil, nil, nil, nil, layouts.gh },
+            { "Mail", nil, monitor1, nil, nil, layouts.gh },
+            { "Slack", nil, monitor1, nil, nil, layouts.gh },
+            { "iTerm2", nil, monitor1, nil, nil, layouts.ty },
+            { "1Password 7", nil, monitor1, nil, nil, layouts.ty }
         }
     end
     utils.hideWindowsInLayout(windowLayout)
-    local test = hs.layout.apply(windowLayout)
+    hs.layout.apply(windowLayout)
 
 end
 
@@ -114,6 +117,10 @@ local function workPreset()
             { "Hammerspoon", nil, nil, nil, nil, layouts.ty },
             { "Messenger", nil, nil, nil, nil, layouts.gh },
             { "Todoist", nil, nil, nil, nil, layouts.gh },
+            { "Mail", nil, monitor1, nil, nil, layouts.gh },
+            { "Slack", nil, monitor1, nil, nil, layouts.gh },
+            { "iTerm2", nil, monitor1, nil, nil, layouts.ty },
+            { "1Password 7", nil, monitor1, nil, nil, layouts.ty }
         }
     end
     utils.hideWindowsInLayout(windowLayout)
@@ -135,6 +142,7 @@ local function personalPreset()
             { "Typora", nil, nil, nil, nil, layouts.df },
             { "Hammerspoon", nil, nil, nil, nil, layouts.ty },
             { "Todoist", nil, nil, nil, nil, layouts.ty },
+            { "Mail", nil, monitor1, nil, nil, layouts.hjk }
         }
     end
     utils.hideWindowsInLayout(windowLayout)
@@ -202,6 +210,7 @@ local function applicationWatcher(appName, eventType, appObject)
         hs.application.watcher.activated,
         hs.application.watcher.deactivated
     }
+    logger.df(appName)
     if (utils.findInTable(applicationEvents, eventType)) then
         if appName == 'Plex' and eventType == hs.application.watcher.activated then
             -- https://www.hammerspoon.org/docs/hs.caffeinate.html#set

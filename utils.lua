@@ -170,7 +170,7 @@ function utils.table.map(tbl, f)
 end
 
 function utils.hideManagedWindows(exclusions)
-    local managedApps = {'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN', 'DataGrip', 'Messenger'}
+    local managedApps = {'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN', 'DataGrip', 'Messenger', 'Slack', 'Mail'}
     local filteredApps = table.filter(managedApps, function(o, k, i) return not utils.findInTable(exclusions, o) end)
     local runningApplications = table.filter(hs.application.runningApplications(), function(runningApplication, k, i) return utils.findInTable(filteredApps, runningApplication:title()) end)
     for _, app in pairs(runningApplications) do
