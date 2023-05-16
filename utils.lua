@@ -170,7 +170,7 @@ function utils.table.map(tbl, f)
 end
 
 function utils.hideManagedWindows(exclusions)
-    local managedApps = {'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN', 'DataGrip', 'Messenger', 'Slack', 'Mail'}
+    local managedApps = {'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN', 'DataGrip', 'Messenger', 'Slack', 'Mail', 'DBeaver', 'Insomnia', 'Safari', 'Hammerspoon'}
     local filteredApps = table.filter(managedApps, function(o, k, i) return not utils.findInTable(exclusions, o) end)
     local runningApplications = table.filter(hs.application.runningApplications(), function(runningApplication, k, i) return utils.findInTable(filteredApps, runningApplication:title()) end)
     for _, app in pairs(runningApplications) do
@@ -182,6 +182,36 @@ function utils.hideWindowsInLayout(windowLayout)
     local windows = utils.table.map(windowLayout, function(value) return value[1] end);
     utils.hideManagedWindows(windows)
     utils.unhideWindows(windows)
+end
+
+function utils.pauseDocker()
+    hs.applescript([[
+        ignoring application responses
+        tell application "System Events"
+          click menu bar item 1 of menu bar 2 of application process "Docker Desktop"
+        end tell
+        end ignoring
+        do shell script "killall System\\ Events"
+        delay 0.1
+        tell application "System Events"
+            click menu item "Pause" of menu 1 of menu bar item 1 of menu bar 2 of application process "Docker Desktop"
+        end tell
+    ]])
+end
+
+function utils.resumeDocker()
+    hs.applescript([[
+        ignoring application responses
+        tell application "System Events"
+          click menu bar item 1 of menu bar 2 of application process "Docker Desktop"
+        end tell
+        end ignoring
+        do shell script "killall System\\ Events"
+        delay 0.1
+        tell application "System Events"
+            click menu item "Resume" of menu 1 of menu bar item 1 of menu bar 2 of application process "Docker Desktop"
+        end tell
+    ]])
 end
 
 return utils

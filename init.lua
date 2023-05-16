@@ -17,21 +17,29 @@ hs.application.enableSpotlightForNameSearches(true);
 
 local logger = hs.logger.new('main')
 local isDebug = true
+local isDockerRunning = true
 
 table.filter = utils.table.filter
 table.map = utils.table.map
 
 local function getLayouts()
+    
     hs.grid.setGrid('6x2')
     hs.grid.setMargins('0x0')
     local layouts = {}
     local monitor1 = hs.screen.allScreens()[1]
+
+    logger.df('Resolution of first screen' ..  monitor1:currentMode()['w'] .. monitor1:currentMode()['h'])
+    layouts.qweasd = hs.grid.getCell('0,0 3x2', monitor1)
+    layouts.ryfgh = hs.grid.getCell('3,0 3x2', monitor1)
     layouts.qwas = hs.grid.getCell('0,0 2x2', monitor1)
     layouts.erdf = hs.grid.getCell('2,0 2x2', monitor1)
     layouts.er = hs.grid.getCell('2,0 2x0', monitor1)
     layouts.df = hs.grid.getCell('2,2 2x0', monitor1)
     layouts.gh = hs.grid.getCell('4,2 2x0', monitor1)
     layouts.ty = hs.grid.getCell('4,0 2x0', monitor1)
+    layouts.tygh = hs.grid.getCell('4,0 2x2', monitor1)
+    layouts.focus = hs.grid.getCell('1.5,0 3x2', monitor1)
     return layouts
 end
 
@@ -42,19 +50,17 @@ local function udemyPreset()
     local windowLayout
     if monitor1['w'] == 2560 and monitor1['h'] == 1600 then
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qwer },
-            { "Code - Insiders", nil, nil, nil, nil, layouts.qwerasdf},
+            { "Code", nil, nil, nil, nil, layouts.qwas },
             { "Typora", nil, monitor1, nil, nil, layouts.as},
-            { "Udemy", nil, monitor1, nil , nil, layouts.tyui},
+            { "Udemy", nil, monitor1, nil , nil, layouts.ty},
             { "Chromium", nil, nil, nil, nil, layouts.dfg },
             { "Google Chrome", nil, monitor1, nil, nil,  layouts.tyuighjk}, 
         }
     else
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qwer },
-            { "Code - Insiders", nil, nil, nil, nil, layouts.qwerasdf},
+            { "Code", nil, nil, nil, nil, layouts.qwas },
             { "Typora", nil, monitor1, nil, nil, layouts.as},
-            { "Udemy", nil, monitor1, nil , nil, layouts.tyui},
+            { "Udemy", nil, monitor1, nil , nil, layouts.ty},
             { "Chromium", nil, nil, nil, nil, layouts.dfg },
             { "Google Chrome", nil, monitor1, nil, nil, layouts.hjk },
             { "SmartGit", nil, monitor1, nil, nil, layouts.hjk },
@@ -73,13 +79,14 @@ local function workPresetWeb()
     local windowLayout
     if monitor1['w'] == 2560 and monitor1['h'] == 1600 then
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qwas },
+            { "Code", nil, nil, nil, nil, layouts.qwas },q
             { "Chrome", nil, nil, nil, nil, layouts.erdf }
         }
     else
         windowLayout = {
             { "Code", nil, nil, nil, nil, layouts.qwas },
             { "Google Chrome", nil, nil, nil, nil, layouts.er },
+            { "Safari Web Content", nil, monitor1, nil, nil, layouts.tygh },
             { "Chromium", nil, nil, nil, nil, layouts.df },
             { "DataGrip", nil, nil ,nil, nil, layouts.gh },
             { "SmartGit", nil, monitor1, nil, nil, layouts.gh },
@@ -90,7 +97,9 @@ local function workPresetWeb()
             { "Mail", nil, monitor1, nil, nil, layouts.gh },
             { "Slack", nil, monitor1, nil, nil, layouts.gh },
             { "iTerm2", nil, monitor1, nil, nil, layouts.ty },
-            { "1Password 7", nil, monitor1, nil, nil, layouts.ty }
+            { "1Password 7", nil, monitor1, nil, nil, layouts.ty },
+            { "Insomnia", nil, monitor1, nil, nil, layouts.gh },
+            { "Pocket Casts", nil, monitor1, nil, nil, layouts.gh },
         }
     end
     utils.hideWindowsInLayout(windowLayout)
@@ -102,25 +111,31 @@ local function workPreset()
     local monitor1 = hs.screen.allScreens()[1]:currentMode()
     local layouts = getLayouts();
     local windowLayout
-    if monitor1['w'] == 2560 and monitor1['h'] == 1600 then
+    if (monitor1['w'] == 2560 and monitor1['h'] == 1600) or (monitor1['w'] == 2048 and monitor1['h'] == 1280) then
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qwas },
-            { "Chrome", nil, nil, nil, nil, layouts.erdf }
+            { "Code", nil, nil, nil, nil, layouts.qweasd },
+            { "Google Chrome", nil, nil, nil, nil, layouts.ryfgh },
+            { "Typora", nil, nil, nil, nil, layouts.df },
+            { "Hammerspoon", nil, nil, nil, nil, layouts.er },
+            { "Todoist", nil, nil, nil, nil, layouts.df},
+            { "Slack", nil, monitor1, nil, nil, layouts.df },
+            { "iTerm2", nil, monitor1, nil, nil, layouts.ty },
+            { "1Password 7", nil, monitor1, nil, nil, layouts.er },
+            { "Insomnia", nil, monitor1, nil, nil, layouts.df },
+            { "DBeaver", nil, monitor1, nil, nil, layouts.df },
         }
     else
         windowLayout = {
             { "Code", nil, nil, nil, nil, layouts.qwas },
-            { "Google Chrome", nil, nil, nil, nil, layouts.erdf },
-            { "DataGrip", nil, nil ,nil, nil, layouts.gh },
-            { "SmartGit", nil, monitor1, nil, nil, layouts.gh },
+            { "Google Chrome", nil, nil, nil, nil, layouts.tygh },
             { "Typora", nil, nil, nil, nil, layouts.df },
-            { "Hammerspoon", nil, nil, nil, nil, layouts.ty },
-            { "Messenger", nil, nil, nil, nil, layouts.gh },
-            { "Todoist", nil, nil, nil, nil, layouts.gh },
-            { "Mail", nil, monitor1, nil, nil, layouts.gh },
-            { "Slack", nil, monitor1, nil, nil, layouts.gh },
+            { "Hammerspoon", nil, nil, nil, nil, layouts.er },
+            { "Todoist", nil, nil, nil, nil, layouts.df},
+            { "Slack", nil, monitor1, nil, nil, layouts.df },
             { "iTerm2", nil, monitor1, nil, nil, layouts.ty },
-            { "1Password 7", nil, monitor1, nil, nil, layouts.ty }
+            { "1Password 7", nil, monitor1, nil, nil, layouts.er },
+            { "Insomnia", nil, monitor1, nil, nil, layouts.df },
+            { "DBeaver", nil, monitor1, nil, nil, layouts.df },
         }
     end
     utils.hideWindowsInLayout(windowLayout)
@@ -131,18 +146,30 @@ local function personalPreset()
     local monitor1 = hs.screen.allScreens()[1]:currentMode()
     local layouts = getLayouts();
     local windowLayout
-    if monitor1['w'] == 2560 and monitor1['h'] == 1600 then
+    if (monitor1['w'] == 2560 and monitor1['h'] == 1600) or (monitor1['w'] == 2048 and monitor1['h'] == 1280) then
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qwas },
-            { "Chrome", nil, nil, nil, nil, layouts.erdf }
+            { "Code", nil, nil, nil, nil, layouts.qweasd },
+            { "Google Chrome", nil, nil, nil, nil, layouts.ryfgh },
+            { "Safari", nil, nil, nil, nil, layouts.ryfgh },
+            { "Typora", nil, nil, nil, nil, layouts.df },
+            { "Hammerspoon", nil, nil, nil, nil, layouts.er },
+            { "Todoist", nil, nil, nil, nil, layouts.df},
+            { "Slack", nil, monitor1, nil, nil, layouts.df },
+            { "iTerm2", nil, monitor1, nil, nil, layouts.ty },
+            { "1Password 7", nil, monitor1, nil, nil, layouts.er },
+            { "Insomnia", nil, monitor1, nil, nil, layouts.df },
+            { "DBeaver", nil, monitor1, nil, nil, layouts.df },
         }
     else
         windowLayout = {
-            { "Google Chrome", nil, nil, nil, nil, layouts.erdf },
+            { "Code", nil, nil, nil, nil, layouts.qwas },
+            { "Obsidian", nil, nil, nil, nil, layouts.df },
+            { "Safari", nil, monitor1, nil, nil, layouts.tygh },
             { "Typora", nil, nil, nil, nil, layouts.df },
             { "Hammerspoon", nil, nil, nil, nil, layouts.ty },
             { "Todoist", nil, nil, nil, nil, layouts.ty },
-            { "Mail", nil, monitor1, nil, nil, layouts.hjk }
+            { "Mail", nil, monitor1, nil, nil, layouts.df },
+            { "Messenger", nil, nil, nil, nil, layouts.gh },
         }
     end
     utils.hideWindowsInLayout(windowLayout)
@@ -150,14 +177,15 @@ local function personalPreset()
 end
 
 
-local function dnPreset()
-    local app = hs.application.find('eDN');
-    if (app and utils.applicationHasVisibleWindows(app)) then
-        app:hide();
-    else
-        hs.application.open('eDN',2, true);
-        hs.eventtap.keyStroke({"ctrl", "cmd"}, "f")
-    end
+local function focus()
+    local monitor1 = hs.screen.allScreens()[1]:currentMode()
+    local layouts = getLayouts();
+    local windowLayout
+    windowLayout = {
+            { "Safari", nil, monitor1, nil, nil, layouts.focus },
+        }
+    utils.hideWindowsInLayout(windowLayout)
+    hs.layout.apply(windowLayout)
 end
 
 -- disable animations
@@ -168,7 +196,7 @@ hs.window.animationDuration = 0
 hs.logger.setGlobalLogLevel(5)
 
 function string.starts(String, Start)
-    return string.sub(String, 1, string.len(Start)) == Start
+    return string.sub(String, 1, strindg.len(Start)) == Start
 end
 
 function string.split(String, separator)
@@ -194,42 +222,11 @@ local function typoraToggle()
     end
 end
 
-local function typoraSearch()
-    hs.application.launchOrFocus('Typora')
-    local typora = hs.application.find('Typora')
-    typora:unhide()
-    typora:mainWindow():unminimize()
-    typora:mainWindow():focus()
-    hs.eventtap.keyStroke({"ctrl", "cmd"}, "1", 0)
-    hs.timer.doAfter(0.1, function() hs.eventtap.keyStroke({"shift", "command"},"f") end)
-end
-
-local function applicationWatcher(appName, eventType, appObject)
-    -- https://www.hammerspoon.org/docs/hs.application.watcher.html
-    local applicationEvents = {
-        hs.application.watcher.activated,
-        hs.application.watcher.deactivated
-    }
-    logger.df(appName)
-    if (utils.findInTable(applicationEvents, eventType)) then
-        if appName == 'Plex' and eventType == hs.application.watcher.activated then
-            -- https://www.hammerspoon.org/docs/hs.caffeinate.html#set
-            hs.caffeinate.set('displayIdle', true, true)
-        elseif appName == 'Plex' and eventType == hs.application.watcher.deactivated then
-            hs.caffeinate.set('displayIdle', false, true)
-        end
-    end
-end
-
-local appWatcher = hs.application.watcher.new(applicationWatcher)
-appWatcher:start()
-
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "s", typoraToggle)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "1", workPresetWeb)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "2", workPreset)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "3", personalPreset)
-hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "4", udemyPreset)
-hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "5", dnPreset)
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "4", focus)
 -- hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "f", typoraSearch)
 
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "d", function()

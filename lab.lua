@@ -219,3 +219,33 @@ local function getLayouts8by2()
     layouts.hjk = hs.grid.getCell('5,1 3x1', monitor1)
     return layouts
 end
+
+local function typoraSearch()
+    hs.application.launchOrFocus('Typora')
+    local typora = hs.application.find('Typora')
+    typora:unhide()
+    typora:mainWindow():unminimize()
+    typora:mainWindow():focus()
+    hs.eventtap.keyStroke({"ctrl", "cmd"}, "1", 0)
+    hs.timer.doAfter(0.1, function() hs.eventtap.keyStroke({"shift", "command"},"f") end)
+end
+
+local function applicationWatcher(appName, eventType, appObject)
+    -- https://www.hammerspoon.org/docs/hs.application.watcher.html
+    local applicationEvents = {
+        hs.application.watcher.activated,
+        hs.application.watcher.deactivacted
+    }
+    logger.df(appName)
+    if (utils.findInTable(applicationEvents, eventType)) then
+        if appName == 'Plex' and eventType == hs.application.watcher.activated then
+            -- https://www.hammerspoon.org/docs/hs.caffeinate.html#set
+            hs.caffeinate.set('displayIdle', true, true)
+        elseif appName == 'Plex' and eventType == hs.application.watcher.deactivated then
+            hs.caffeinate.set('displayIdle', false, true)
+        end
+    end
+end
+
+local appWatcher = hs.application.watcher.new(applicationWatcher)
+appWatcher:start()
