@@ -152,8 +152,7 @@ local function nomadPreset()
     utils.moveApplicationMainWindow('Slack', monitor1, fullIpadScreenRect)
     utils.moveApplicationMainWindow('Spotify', monitor1, fullIpadScreenRect)
     utils.moveApplicationMainWindow('Todoist', monitor1, fullIpadScreenRect)
-
-
+    hs.eventtap.keyStroke({"alt", "shift"}, "z", 1)
 end
 
 local function personalPreset()

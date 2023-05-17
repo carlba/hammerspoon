@@ -142,21 +142,13 @@ function utils.moveApplicationMainWindow(applicationTitle, monitor, rect)
     local app = hs.application.find(applicationTitle)
     if (app) then
         local focusedWindow = app:mainWindow()
-        logger.df(hs.inspect(focusedWindow))
+        
+        if (not focusedWindow) then
+            logger.df('Missing window')
+            logger.df(app:title())
+        end
         focusedWindow:move(rect, monitor, false)
     end
-end
-
--- table.filter({"a", "b", "c", "d"}, function(o, k, i) return o >= "c" end)  --> {"c","d"}
---
--- @FGRibreau - Francois-Guillaume Ribreau
--- @Redsmin - A full-feature client for Redis http://redsmin.com
-function utils.table.filter(t, filterIter)
-    local out = {}
-    for k, v in pairs(t) do
-        if filterIter(v, k, t) then out[k] = v end
-    end
-    return out
 end
 
 -- table.filter({"a", "b", "c", "d"}, function(o, k, i) return o >= "c" end)  --> {"c","d"}
