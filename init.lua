@@ -23,13 +23,12 @@ table.filter = utils.table.filter
 table.map = utils.table.map
 
 local function getLayouts()
-    
     hs.grid.setGrid('6x2')
     hs.grid.setMargins('0x0')
     local layouts = {}
     local monitor1 = hs.screen.allScreens()[1]
 
-    logger.df('Resolution of first screen' ..  monitor1:currentMode()['w'] .. monitor1:currentMode()['h'])
+    logger.df('Resolution of first screen' .. monitor1:currentMode()['w'] .. monitor1:currentMode()['h'])
     layouts.qweasd = hs.grid.getCell('0,0 3x2', monitor1)
     layouts.ryfgh = hs.grid.getCell('3,0 3x2', monitor1)
     layouts.qwas = hs.grid.getCell('0,0 2x2', monitor1)
@@ -50,26 +49,26 @@ local function udemyPreset()
     local windowLayout
     if monitor1['w'] == 2560 and monitor1['h'] == 1600 then
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qwas },
-            { "Typora", nil, monitor1, nil, nil, layouts.as},
-            { "Udemy", nil, monitor1, nil , nil, layouts.ty},
-            { "Chromium", nil, nil, nil, nil, layouts.dfg },
-            { "Google Chrome", nil, monitor1, nil, nil,  layouts.tyuighjk}, 
+            { "Code",          nil, nil,      nil,  nil, layouts.qwas },
+            { "Typora",        nil, monitor1, nil,  nil, layouts.as },
+            { "Udemy",         nil, monitor1, nil,  nil, layouts.ty },
+            { "Chromium",      nil, nil,      nil,  nil, layouts.dfg },
+            { "Google Chrome", nil, monitor1, nil,  nil, layouts.tyuighjk },
         }
     else
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qwas },
-            { "Typora", nil, monitor1, nil, nil, layouts.as},
-            { "Udemy", nil, monitor1, nil , nil, layouts.ty},
-            { "Chromium", nil, nil, nil, nil, layouts.dfg },
-            { "Google Chrome", nil, monitor1, nil, nil, layouts.hjk },
-            { "SmartGit", nil, monitor1, nil, nil, layouts.hjk },
-            { "Todoist", nil, nil, nil, nil, layouts.gh },
+            { "Code",          nil, nil,      nil,  nil, layouts.qwas },
+            { "Typora",        nil, monitor1, nil,  nil, layouts.as },
+            { "Udemy",         nil, monitor1, nil,  nil, layouts.ty },
+            { "Chromium",      nil, nil,      nil,  nil, layouts.dfg },
+            { "Google Chrome", nil, monitor1, nil,  nil, layouts.hjk },
+            { "SmartGit",      nil, monitor1, nil,  nil, layouts.hjk },
+            { "Todoist",       nil, nil,      nil,  nil, layouts.gh },
         }
         hs.alert.show('udemy')
     end
     utils.hideWindowsInLayout(windowLayout)
-    hs.application.open('Udemy',2, true);
+    hs.application.open('Udemy', 2, true);
     hs.layout.apply(windowLayout)
 end
 
@@ -79,32 +78,31 @@ local function workPresetWeb()
     local windowLayout
     if monitor1['w'] == 2560 and monitor1['h'] == 1600 then
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qwas },q
-            { "Chrome", nil, nil, nil, nil, layouts.erdf }
+            { "Code", nil, nil, nil, nil, layouts.qwas }, q
+        { "Chrome", nil, nil, nil, nil, layouts.erdf }
         }
     else
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qwas },
-            { "Google Chrome", nil, nil, nil, nil, layouts.er },
+            { "Code",               nil, nil,      nil, nil, layouts.qwas },
+            { "Google Chrome",      nil, nil,      nil, nil, layouts.er },
             { "Safari Web Content", nil, monitor1, nil, nil, layouts.tygh },
-            { "Chromium", nil, nil, nil, nil, layouts.df },
-            { "DataGrip", nil, nil ,nil, nil, layouts.gh },
-            { "SmartGit", nil, monitor1, nil, nil, layouts.gh },
-            { "Typora", nil, nil, nil, nil, layouts.df },
-            { "Hammerspoon", nil, nil, nil, nil, layouts.ty },
-            { "Messenger", nil, nil, nil, nil, layouts.gh },
-            { "Todoist", nil, nil, nil, nil, layouts.gh },
-            { "Mail", nil, monitor1, nil, nil, layouts.gh },
-            { "Slack", nil, monitor1, nil, nil, layouts.gh },
-            { "iTerm2", nil, monitor1, nil, nil, layouts.ty },
-            { "1Password 7", nil, monitor1, nil, nil, layouts.ty },
-            { "Insomnia", nil, monitor1, nil, nil, layouts.gh },
-            { "Pocket Casts", nil, monitor1, nil, nil, layouts.gh },
+            { "Chromium",           nil, nil,      nil, nil, layouts.df },
+            { "DataGrip",           nil, nil,      nil, nil, layouts.gh },
+            { "SmartGit",           nil, monitor1, nil, nil, layouts.gh },
+            { "Typora",             nil, nil,      nil, nil, layouts.df },
+            { "Hammerspoon",        nil, nil,      nil, nil, layouts.ty },
+            { "Messenger",          nil, nil,      nil, nil, layouts.gh },
+            { "Todoist",            nil, nil,      nil, nil, layouts.gh },
+            { "Mail",               nil, monitor1, nil, nil, layouts.gh },
+            { "Slack",              nil, monitor1, nil, nil, layouts.gh },
+            { "iTerm2",             nil, monitor1, nil, nil, layouts.ty },
+            { "1Password 7",        nil, monitor1, nil, nil, layouts.ty },
+            { "Insomnia",           nil, monitor1, nil, nil, layouts.gh },
+            { "Pocket Casts",       nil, monitor1, nil, nil, layouts.gh },
         }
     end
     utils.hideWindowsInLayout(windowLayout)
     hs.layout.apply(windowLayout)
-
 end
 
 local function workPreset()
@@ -113,29 +111,29 @@ local function workPreset()
     local windowLayout
     if (monitor1['w'] == 2560 and monitor1['h'] == 1600) or (monitor1['w'] == 2048 and monitor1['h'] == 1280) then
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qweasd },
-            { "Google Chrome", nil, nil, nil, nil, layouts.ryfgh },
-            { "Typora", nil, nil, nil, nil, layouts.df },
-            { "Hammerspoon", nil, nil, nil, nil, layouts.er },
-            { "Todoist", nil, nil, nil, nil, layouts.df},
-            { "Slack", nil, monitor1, nil, nil, layouts.df },
-            { "iTerm2", nil, monitor1, nil, nil, layouts.ty },
-            { "1Password 7", nil, monitor1, nil, nil, layouts.er },
-            { "Insomnia", nil, monitor1, nil, nil, layouts.df },
-            { "DBeaver", nil, monitor1, nil, nil, layouts.df },
+            { "Code",          nil, nil,      nil, nil, layouts.qweasd },
+            { "Google Chrome", nil, nil,      nil, nil, layouts.ryfgh },
+            { "Typora",        nil, nil,      nil, nil, layouts.df },
+            { "Hammerspoon",   nil, nil,      nil, nil, layouts.er },
+            { "Todoist",       nil, nil,      nil, nil, layouts.df },
+            { "Slack",         nil, monitor1, nil, nil, layouts.df },
+            { "iTerm2",        nil, monitor1, nil, nil, layouts.ty },
+            { "1Password 7",   nil, monitor1, nil, nil, layouts.er },
+            { "Insomnia",      nil, monitor1, nil, nil, layouts.df },
+            { "DBeaver",       nil, monitor1, nil, nil, layouts.df },
         }
     else
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qwas },
-            { "Google Chrome", nil, nil, nil, nil, layouts.tygh },
-            { "Typora", nil, nil, nil, nil, layouts.df },
-            { "Hammerspoon", nil, nil, nil, nil, layouts.er },
-            { "Todoist", nil, nil, nil, nil, layouts.df},
-            { "Slack", nil, monitor1, nil, nil, layouts.df },
-            { "iTerm2", nil, monitor1, nil, nil, layouts.ty },
-            { "1Password 7", nil, monitor1, nil, nil, layouts.er },
-            { "Insomnia", nil, monitor1, nil, nil, layouts.df },
-            { "DBeaver", nil, monitor1, nil, nil, layouts.df },
+            { "Code",          nil, nil,      nil, nil, layouts.qwas },
+            { "Google Chrome", nil, nil,      nil, nil, layouts.tygh },
+            { "Typora",        nil, nil,      nil, nil, layouts.df },
+            { "Hammerspoon",   nil, nil,      nil, nil, layouts.er },
+            { "Todoist",       nil, nil,      nil, nil, layouts.df },
+            { "Slack",         nil, monitor1, nil, nil, layouts.df },
+            { "iTerm2",        nil, monitor1, nil, nil, layouts.ty },
+            { "1Password 7",   nil, monitor1, nil, nil, layouts.er },
+            { "Insomnia",      nil, monitor1, nil, nil, layouts.df },
+            { "DBeaver",       nil, monitor1, nil, nil, layouts.df },
         }
     end
     utils.hideWindowsInLayout(windowLayout)
@@ -152,7 +150,7 @@ local function nomadPreset()
     utils.moveApplicationMainWindow('Slack', monitor1, fullIpadScreenRect)
     utils.moveApplicationMainWindow('Spotify', monitor1, fullIpadScreenRect)
     utils.moveApplicationMainWindow('Todoist', monitor1, fullIpadScreenRect)
-    hs.eventtap.keyStroke({"alt", "shift"}, "z", 1)
+    hs.eventtap.keyStroke({ "alt", "shift" }, "z", 1)
 end
 
 local function personalPreset()
@@ -161,28 +159,28 @@ local function personalPreset()
     local windowLayout
     if (monitor1['w'] == 2560 and monitor1['h'] == 1600) or (monitor1['w'] == 2048 and monitor1['h'] == 1280) then
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qweasd },
-            { "Google Chrome", nil, nil, nil, nil, layouts.ryfgh },
-            { "Safari", nil, nil, nil, nil, layouts.ryfgh },
-            { "Typora", nil, nil, nil, nil, layouts.df },
-            { "Hammerspoon", nil, nil, nil, nil, layouts.er },
-            { "Todoist", nil, nil, nil, nil, layouts.df},
-            { "Slack", nil, monitor1, nil, nil, layouts.df },
-            { "iTerm2", nil, monitor1, nil, nil, layouts.ty },
-            { "1Password 7", nil, monitor1, nil, nil, layouts.er },
-            { "Insomnia", nil, monitor1, nil, nil, layouts.df },
-            { "DBeaver", nil, monitor1, nil, nil, layouts.df },
+            { "Code",          nil, nil,      nil, nil, layouts.qweasd },
+            { "Google Chrome", nil, nil,      nil, nil, layouts.ryfgh },
+            { "Safari",        nil, nil,      nil, nil, layouts.ryfgh },
+            { "Typora",        nil, nil,      nil, nil, layouts.df },
+            { "Hammerspoon",   nil, nil,      nil, nil, layouts.er },
+            { "Todoist",       nil, nil,      nil, nil, layouts.df },
+            { "Slack",         nil, monitor1, nil, nil, layouts.df },
+            { "iTerm2",        nil, monitor1, nil, nil, layouts.ty },
+            { "1Password 7",   nil, monitor1, nil, nil, layouts.er },
+            { "Insomnia",      nil, monitor1, nil, nil, layouts.df },
+            { "DBeaver",       nil, monitor1, nil, nil, layouts.df },
         }
     else
         windowLayout = {
-            { "Code", nil, nil, nil, nil, layouts.qwas },
-            { "Obsidian", nil, nil, nil, nil, layouts.df },
-            { "Safari", nil, monitor1, nil, nil, layouts.tygh },
-            { "Typora", nil, nil, nil, nil, layouts.df },
-            { "Hammerspoon", nil, nil, nil, nil, layouts.ty },
-            { "Todoist", nil, nil, nil, nil, layouts.ty },
-            { "Mail", nil, monitor1, nil, nil, layouts.df },
-            { "Messenger", nil, nil, nil, nil, layouts.gh },
+            { "Code",        nil, nil,      nil, nil, layouts.qwas },
+            { "Obsidian",    nil, nil,      nil, nil, layouts.df },
+            { "Safari",      nil, monitor1, nil, nil, layouts.tygh },
+            { "Typora",      nil, nil,      nil, nil, layouts.df },
+            { "Hammerspoon", nil, nil,      nil, nil, layouts.ty },
+            { "Todoist",     nil, nil,      nil, nil, layouts.ty },
+            { "Mail",        nil, monitor1, nil, nil, layouts.df },
+            { "Messenger",   nil, nil,      nil, nil, layouts.gh },
         }
     end
     utils.hideWindowsInLayout(windowLayout)
@@ -195,8 +193,8 @@ local function focus()
     local layouts = getLayouts();
     local windowLayout
     windowLayout = {
-            { "Safari", nil, monitor1, nil, nil, layouts.focus },
-        }
+        { "Safari", nil, monitor1, nil, nil, layouts.focus },
+    }
     utils.hideWindowsInLayout(windowLayout)
     hs.layout.apply(windowLayout)
 end
@@ -214,9 +212,9 @@ end
 
 function string.split(String, separator)
     separator = separator and separator or '%s'
-    local matches={}
-    for str in string.gmatch(String, "([^"..separator.."]+)") do
-            table.insert(matches, str)
+    local matches = {}
+    for str in string.gmatch(String, "([^" .. separator .. "]+)") do
+        table.insert(matches, str)
     end
     return matches
 end
