@@ -142,6 +142,20 @@ local function workPreset()
     hs.layout.apply(windowLayout)
 end
 
+
+local function nomadPreset()
+    local monitor1 = hs.screen.allScreens()[1]:currentMode()
+    local fullIpadScreenRect = hs.geometry.rect(2048, 0, 2360, 1640)
+    -- logger.df(hs.inspect(currentWindow))
+
+    utils.moveApplicationMainWindow('WhatsApp', monitor1, fullIpadScreenRect)
+    utils.moveApplicationMainWindow('Slack', monitor1, fullIpadScreenRect)
+    utils.moveApplicationMainWindow('Spotify', monitor1, fullIpadScreenRect)
+    utils.moveApplicationMainWindow('Todoist', monitor1, fullIpadScreenRect)
+
+
+end
+
 local function personalPreset()
     local monitor1 = hs.screen.allScreens()[1]:currentMode()
     local layouts = getLayouts();
@@ -223,7 +237,7 @@ local function typoraToggle()
 end
 
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "s", typoraToggle)
-hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "1", workPresetWeb)
+hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "1", nomadPreset)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "2", workPreset)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "3", personalPreset)
 hs.hotkey.bind({ "cmd", "ctrl", "shift", "alt" }, "4", focus)

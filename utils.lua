@@ -42,8 +42,8 @@ end
 
 function utils.countTable(table)
     local count = 0
-    for k,v in pairs(table) do
-         count = count + 1
+    for k, v in pairs(table) do
+        count = count + 1
     end
     return count
 end
@@ -71,15 +71,15 @@ end
 -- taken from https://stackoverflow.com/a/63081277/1839778
 function utils.findInTable(t, value)
     local found = false
-    for _, v in pairs (t) do
-      if v == value then
-        found = true
-      end
+    for _, v in pairs(t) do
+        if v == value then
+            found = true
+        end
     end
     return found
 end
 
-function utils.getFilteredWindowLayout (windowLayout, windowTitle)
+function utils.getFilteredWindowLayout(windowLayout, windowTitle)
     local newWindowLayout = {}
     for index, value in ipairs(windowLayout) do
         if value[1] == windowTitle then
@@ -129,7 +129,8 @@ function utils.applicationHasVisibleWindows(app)
 end
 
 function utils.unhideWindows(applications)
-    local runningApplications = table.filter(hs.application.runningApplications(), function(runningApplication, k, i) return utils.findInTable(applications, runningApplication:title()) end)
+    local runningApplications = table.filter(hs.application.runningApplications(),
+        function(runningApplication, k, i) return utils.findInTable(applications, runningApplication:title()) end)
 
     for _, runningApp in pairs(runningApplications) do
         logger.df(hs.inspect(runningApp))
@@ -137,6 +138,15 @@ function utils.unhideWindows(applications)
     end
 end
 
+function utils.moveApplicationMainWindow(applicationTitle, monitor, rect)
+    local app = hs.application.find(applicationTitle)
+    if (app) then
+        local focusedWindow = app:mainWindow()
+        logger.df(hs.inspect(focusedWindow))
+        focusedWindow:move(rect, monitor, false)
+    end
+end
+
 -- table.filter({"a", "b", "c", "d"}, function(o, k, i) return o >= "c" end)  --> {"c","d"}
 --
 -- @FGRibreau - Francois-Guillaume Ribreau
@@ -144,7 +154,7 @@ end
 function utils.table.filter(t, filterIter)
     local out = {}
     for k, v in pairs(t) do
-      if filterIter(v, k, t) then out[k] = v end
+        if filterIter(v, k, t) then out[k] = v end
     end
     return out
 end
@@ -156,23 +166,25 @@ end
 function utils.table.filter(t, filterIter)
     local out = {}
     for k, v in pairs(t) do
-      if filterIter(v, k, t) then out[k] = v end
+        if filterIter(v, k, t) then out[k] = v end
     end
     return out
 end
 
 function utils.table.map(tbl, f)
     local t = {}
-    for k,v in pairs(tbl) do
+    for k, v in pairs(tbl) do
         t[k] = f(v)
     end
     return t
 end
 
 function utils.hideManagedWindows(exclusions)
-    local managedApps = {'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN', 'DataGrip', 'Messenger', 'Slack', 'Mail', 'DBeaver', 'Insomnia', 'Safari', 'Hammerspoon'}
+    local managedApps = { 'Code', 'Typora', 'Udemy', 'Chromium', 'Google Chrome', 'eDN', 'DataGrip', 'Messenger',
+        'Slack', 'Mail', 'DBeaver', 'Insomnia', 'Safari', 'Hammerspoon' }
     local filteredApps = table.filter(managedApps, function(o, k, i) return not utils.findInTable(exclusions, o) end)
-    local runningApplications = table.filter(hs.application.runningApplications(), function(runningApplication, k, i) return utils.findInTable(filteredApps, runningApplication:title()) end)
+    local runningApplications = table.filter(hs.application.runningApplications(),
+        function(runningApplication, k, i) return utils.findInTable(filteredApps, runningApplication:title()) end)
     for _, app in pairs(runningApplications) do
         app:hide()
     end
@@ -215,4 +227,3 @@ function utils.resumeDocker()
 end
 
 return utils
-
